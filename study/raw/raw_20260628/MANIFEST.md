@@ -1,8 +1,8 @@
 # Safe-Spark-Agents — raw data dump (2026-06-28)
 
 Consolidated kept experiment data. `all_results.jsonl` is every row with a `_source` tag;
-`by_sweep/` has them split per sweep; `transcripts.tar.gz` holds the per-run agent transcripts
-(paths preserved; each row's `transcript_path` resolves inside it).
+`by_sweep/` has them split per sweep; the per-run agent transcripts ship in the GitHub Release
+archive (`v1-repro`), not in-tree (paths preserved; each row's `transcript_path` resolves inside it).
 
 **Total rows: 316** (A+B2 Decision-B sweep is still running — its rows append on completion).
 

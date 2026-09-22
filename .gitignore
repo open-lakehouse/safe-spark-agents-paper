@@ -9,6 +9,9 @@ build/
 *.tar.gz
 dist/
 
+# runtime backups made by the repro scripts (never commit)
+*.frozen.bak
+
 # agent working dirs / generated data (reproducible from seeds; raw archive is the release asset)
 **/.work.*
 **/_data/
