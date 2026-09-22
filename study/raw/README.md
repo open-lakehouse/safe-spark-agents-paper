@@ -3,14 +3,12 @@
 The full, unaggregated raw data behind Section 1, included so this repo is self-contained for the
 handoff (nothing lives only in a separate working tree). Two forms of the same data:
 
-- `sasa_raw_data_20260628.tar.gz` : the canonical archive (provenance-stamped, redistributable),
-  shipped as the GitHub Release asset (`v1-repro`) instead of being committed.
+- `sasa_raw_data_20260628.tar.gz` : the canonical archive (provenance-stamped, redistributable).
 - `raw_20260628/` : the same dump unpacked for direct browsing:
   - `all_results.jsonl` : every run row with a `_source` sweep tag.
   - `by_sweep/*.jsonl` : the rows split per sweep.
+  - `transcripts.tar.gz` : the per-run agent transcripts (each row's `transcript_path` resolves inside).
   - `MANIFEST.md` : row counts, arms, seeds, and the instrument git SHA per sweep.
-- per-run agent transcripts (each row's `transcript_path` resolves inside) are included in the
-  release archive.
 
 ## What this is (and is not)
 This is the historical **raw sweep data** (the N=3 exploratory sweeps: A2 re-run, B/B1 primary
