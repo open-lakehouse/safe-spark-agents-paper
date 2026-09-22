@@ -193,7 +193,7 @@ python load/load_to_iceberg.py --data-dir ~/ssa-deploy/data --catalog iceberg
 python load/stream_to_iceberg.py --chaos-rate 0.08 --seed 42
 ```
 
-**Run pipelines:** the `safe-spark-agents/pipelines/*` SDP pipelines run against
+**Run pipelines:** the `safe-spark-agents/demos/pipelines/*` SDP pipelines run against
 the Connect server by pointing `SPARK_REMOTE` at the mTLS endpoint. CDC: use
 hand-rolled `MERGE` SCD1/SCD2 on the Tier-A (released 4.1) image, or native
 `create_auto_cdc_flow(stored_as_scd_type=1)` on the Tier-B (5.0-SNAPSHOT) image.

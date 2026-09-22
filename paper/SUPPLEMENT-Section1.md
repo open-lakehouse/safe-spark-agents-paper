@@ -162,15 +162,15 @@ Calibration (local backend, few tasks, N=3):
 ```bash
 cd study
 ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY" python3 harness/runner.py \
-  --backend local --config study.config.json --arms-dir arms \
-  --tasks TASKS.lock.json --seeds SEEDS.lock.json \
+  --backend local --config config/study.config.json --arms-dir arms \
+  --tasks config/TASKS.lock.json --seeds config/SEEDS.lock.json \
   --only-tasks orders_silver_gold,p1_medallion,p2_cdc \
   --only-arms A,B --max-seeds 3 \
   --out results.calibration.local.n3.jsonl \
   --work-dir .work.calibration.local.n3 --per-cell-timeout 1800
 ```
 Uniform-substrate run for the COST claim: identical but `--backend live` (requires a reachable Spark Connect endpoint + `ANTHROPIC_API_KEY`).
-Analysis: `python3 analysis/analyze.py <out.jsonl> --tasks TASKS.lock.json`.
+Analysis: `python3 analysis/analyze.py <out.jsonl> --tasks config/TASKS.lock.json`.
 
 ### SM6.9 Cost accounting (how each number is computed)
 - **Token:** tokens-to-correct(arm) = sum of `per_iteration[:iterations_to_green].tokens.{input,output}` over `reached_correct` rows; paired A-vs-B, bootstrap CI.
@@ -182,7 +182,7 @@ Analysis: `python3 analysis/analyze.py <out.jsonl> --tasks TASKS.lock.json`.
 *(Data · Tasks · Agents/Models · Architecture · Execution. Placed here in the working draft; moves ahead of §1.4 Results in final layout. Every claim cited to a file:line on `origin/dev`.)*
 
 ### SM7.1 Data
-Inputs are **deterministic NDJSON event streams** produced per `(task, seed)` by task-specific generators under `infra/`. The runner resolves each task's `input`, applies any `input_args` (e.g. `--v3`), and invokes `python <gen> --seed <seed>`, writing to `<work_dir>/_data/<gen>_seed<seed>.ndjson` (`runner.py:625-651`); multi-input tasks generate each `aux_inputs` the same way (`runner.py:654-672`). The agent receives only **location** env vars: `AGENT_INPUT_PATH` (+ `AGENT_OUTPUT_PATH`/`AGENT_DEDUP_PATH` for local imperative; `AGENT_OUTPUT_TABLE` + `AGENT_AUX_INPUT_*` for live), a paradigm-symmetric, location-only contract (`local.py:433-443`; `live.py:713-718`; `base.py:229-259`). Each generator seeds its RNG from `--seed`, so data is a pure function of (generator, args, seed); seed 42 reproduces the registered oracle stream as a regression check.
+Inputs are **deterministic NDJSON event streams** produced per `(task, seed)` by task-specific generators under `generators/`. The frozen `TASKS.lock.json` still records the pre-reorganization `infra/` prefix (the corpus is locked byte-for-byte); the runner maps that legacy prefix to `generators/` at resolution time. It resolves each task's `input`, applies any `input_args` (e.g. `--v3`), and invokes `python <gen> --seed <seed>`, writing to `<work_dir>/_data/<gen>_seed<seed>.ndjson` (`runner.py:625-651`); multi-input tasks generate each `aux_inputs` the same way (`runner.py:654-672`). The agent receives only **location** env vars: `AGENT_INPUT_PATH` (+ `AGENT_OUTPUT_PATH`/`AGENT_DEDUP_PATH` for local imperative; `AGENT_OUTPUT_TABLE` + `AGENT_AUX_INPUT_*` for live), a paradigm-symmetric, location-only contract (`local.py:433-443`; `live.py:713-718`; `base.py:229-259`). Each generator seeds its RNG from `--seed`, so data is a pure function of (generator, args, seed); seed 42 reproduces the registered oracle stream as a regression check.
 
 Six substrates + an FX feed, each with **deliberately injected defect traps**:
 
@@ -242,5 +242,4 @@ Per cell: `compose_task_prompt()` joins the shared preamble + the task's ticket 
 - **Blind grading**: the oracle (`oracles.py`) scores the materialized output against ground truth without access to the agent's reasoning; "blind" = the grader sees only output, and the prompt never saw the fix's title.
 
 ### SM7.7 Execution / run-triggering
-Launched via `python3 harness/runner.py` with `--backend {replay,live,local}`, `--config study.config.json`, `--arms-dir`, `--tasks`, `--seeds`, `--only-arms`, `--only-tasks`, `--max-seeds`, `--out <jsonl>`, `--work-dir`, `--per-cell-timeout` (`runner.py:1321-1344`). Backends: **replay** (offline deterministic, no LLM/Spark, needs a recorded trace), **live** (Anthropic + Spark Connect, needs a reachable endpoint + `ANTHROPIC_API_KEY`), **local** (real local Spark, paradigm-split). Outputs: one JSONL row per cell to `--out`, transcripts to `--work-dir`; `analysis/analyze.py <out> --tasks TASKS.lock.json` aggregates to `report.json`. Each row is stamped with provenance: `git_sha`, `image_digest`, `spark_version`, `base_model_id`, which is how instrument-version contamination (§SM6.4) is detectable. Literal commands in §SM6.8.
-
+Launched via `python3 harness/runner.py` with `--backend {replay,live,local}`, `--config config/study.config.json`, `--arms-dir`, `--tasks`, `--seeds`, `--only-arms`, `--only-tasks`, `--max-seeds`, `--out <jsonl>`, `--work-dir`, `--per-cell-timeout` (`runner.py:1321-1344`). Backends: **replay** (offline deterministic, no LLM/Spark, needs a recorded trace), **live** (Anthropic + Spark Connect, needs a reachable endpoint + `ANTHROPIC_API_KEY`), **local** (real local Spark, paradigm-split). Outputs: one JSONL row per cell to `--out`, transcripts to `--work-dir`; `analysis/analyze.py <out> --tasks config/TASKS.lock.json` aggregates to `report.json`. Each row is stamped with provenance: `git_sha`, `image_digest`, `spark_version`, `base_model_id`, which is how instrument-version contamination (§SM6.4) is detectable. Literal commands in §SM6.8.

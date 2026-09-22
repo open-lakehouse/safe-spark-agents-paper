@@ -22,7 +22,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 STUDY = os.path.dirname(HERE)
 sys.path.insert(0, STUDY)
 
-TASKS = json.load(open(os.path.join(STUDY, "TASKS.lock.json")))
+TASKS = json.load(open(os.path.join(STUDY, "config", "TASKS.lock.json")))
 PREAMBLE = open(os.path.join(STUDY, "prompts", "task_prompt.md")).read()
 
 # Single source of truth for the banned vocabulary + checker (importable from the

@@ -52,7 +52,7 @@ def _factories(monkey_key=True):
         os.environ.setdefault("ANTHROPIC_API_KEY", "test-key-not-used")
     server = SimpleNamespace(remote="sc://localhost:15002/;user_id=alice",
                              rest_url="http://localhost:4040")
-    cfg = runner.StudyConfig.from_file(os.path.join(STUDY, "study.config.json"))
+    cfg = runner.StudyConfig.from_file(os.path.join(STUDY, "config", "study.config.json"))
     return runner.make_local_factories(
         cfg, "PREAMBLE", TASKS_BY_ID, server,
         imperative_warehouse="/tmp/imp_wh", imperative_ui_port=4041), server
@@ -461,7 +461,7 @@ class _RaisingExecutor:
 def _empty_episode(arm_id):
     from harness.backends.base import LoopState
     from harness.backends.local import ScriptedBrain
-    cfg = runner.StudyConfig.from_file(os.path.join(STUDY, "study.config.json"))
+    cfg = runner.StudyConfig.from_file(os.path.join(STUDY, "config", "study.config.json"))
     brain = ScriptedBrain([{"code": "", "command": "python"}])  # never any code
     with tempfile.TemporaryDirectory() as tmp:
         state = LoopState(task="orders_silver_gold", seed=0, workspace=tmp,
@@ -797,7 +797,7 @@ def test_p5_mart_style_cell_completes_with_real_row_not_harness_error():
         def stop(self):
             pass
 
-    cfg = runner.StudyConfig.from_file(os.path.join(STUDY, "study.config.json"))
+    cfg = runner.StudyConfig.from_file(os.path.join(STUDY, "config", "study.config.json"))
     task_spec = {"id": "p5_mart", "defects_in_scope": ["D1", "D4"],
                  "oracles": {}, "graded_by": "output_oracle"}  # no output_contract
     ex = FakeSDPExecutor()
@@ -918,7 +918,7 @@ def test_run_episode_survives_hanging_agent():
     graceful EXECUTION_TIMEOUT failure, the loop proceeds, and the agent is fed the
     'do not start an unbounded streaming query' guidance."""
     from harness.backends.local import ScriptedBrain
-    cfg = runner.StudyConfig.from_file(os.path.join(STUDY, "study.config.json"))
+    cfg = runner.StudyConfig.from_file(os.path.join(STUDY, "config", "study.config.json"))
     arm = SimpleNamespace(max_iterations=2, dry_run_gate=False,
                           paradigm="imperative_pyspark", arm_id="A")
     brain = ScriptedBrain([{"code": "import time\ntime.sleep(30)\n", "command": "python"}])
@@ -979,7 +979,7 @@ def test_timeout_iteration_is_zero_cost_and_not_a_dry_run_intercept():
     iteration but NOT a dry-run intercept -- never the ~timeout wall-clock fallback
     pricing. Covered for both the execute path (no gate) and the gate path (B2-like)."""
     from harness.backends.local import ScriptedBrain
-    cfg = runner.StudyConfig.from_file(os.path.join(STUDY, "study.config.json"))
+    cfg = runner.StudyConfig.from_file(os.path.join(STUDY, "config", "study.config.json"))
     brain_code = [{"code": "import time\ntime.sleep(30)\n", "command": "python"}]
 
     for gate in (False, True):
@@ -1156,7 +1156,7 @@ _TASK_SPEC = {"id": "orders_silver_gold", "defects_in_scope": ["D8"],
 
 
 def _cfg():
-    return runner.StudyConfig.from_file(os.path.join(STUDY, "study.config.json"))
+    return runner.StudyConfig.from_file(os.path.join(STUDY, "config", "study.config.json"))
 
 
 def test_per_cell_guard_returns_real_row_for_normal_cell():

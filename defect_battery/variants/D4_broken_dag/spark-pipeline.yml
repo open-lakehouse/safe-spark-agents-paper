@@ -1,7 +1,7 @@
 name: D4_broken_dag
 catalog: spark_catalog
 database: default
-storage: file://__REPO__/experiments/defect_battery/variants/D4_broken_dag/pipeline-storage
+storage: file://__REPO__/defect_battery/variants/D4_broken_dag/pipeline-storage
 libraries:
   - glob:
       include: transformations/**

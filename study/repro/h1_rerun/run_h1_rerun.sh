@@ -10,7 +10,7 @@ STUDY="$(cd "$HERE/../.." && pwd)"
 SKILL="$STUDY/skills/pyspark-sdp/SKILL.md"
 UTC="$STUDY/repro/tzfix_d7_test/utc_section.md"
 BACKUP="$HERE/pyspark-sdp.SKILL.frozen.bak"
-OUT="$STUDY/results.h1rerun.B.jsonl"
+OUT="$STUDY/results/results.h1rerun.B.jsonl"
 LOG="$STUDY/h1rerun.log"
 cd "$STUDY" || exit 1
 restore(){ [ -f "$BACKUP" ] && cp "$BACKUP" "$SKILL" && echo "$(date) RESTORED frozen skill" >> "$LOG"; }

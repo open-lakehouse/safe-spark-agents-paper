@@ -379,7 +379,7 @@ def test_dedup_path_scope_matches_the_real_corpus():
     this assertion instead of silently changing imperative grading behaviour.
     (corpus22 / v3.0.0 added new_lineitem_reconcile, whose dedup mart is a secondary
     output; acknowledged here.)"""
-    catalog = os.path.join(STUDY, "TASKS.lock.json")
+    catalog = os.path.join(STUDY, "config", "TASKS.lock.json")
     if not os.path.exists(catalog):
         pytest.skip(f"task catalog not found at {catalog}")
     with open(catalog) as f:
@@ -418,7 +418,7 @@ def test_imperative_arm_reaches_real_d6_grade_from_disk_after_spark_stop():
                 base_model_id="claude-sonnet-4-6",
                 task_prompt_path=os.path.join(STUDY, "prompts", "task_prompt.md"),
                 executor_config=costmod.ExecutorConfig(4, 4, 16.0, 0.192, "local", "local"),
-                generator="infra/gen_messy_orders.py")
+                generator="generators/gen_messy_orders.py")
 
         for task_id, dedup_table in (("orders_silver_gold", "silver_orders"),
                                      ("p12_quarantine_dlq", "clean_orders")):
@@ -427,7 +427,7 @@ def test_imperative_arm_reaches_real_d6_grade_from_disk_after_spark_stop():
                         "dedup_table": dedup_table, "key_col": "order_id",
                         "payload_cols": ["amount", "category"]}
             task_spec = {"id": task_id, "defects_in_scope": ["D6"],
-                         "input": "infra/gen_messy_orders.py", "output_contract": contract}
+                         "input": "generators/gen_messy_orders.py", "output_contract": contract}
 
             def make_brain(task, a, seed):
                 return ScriptedBrain([{"code": _D6_CLEAN, "command": "python", "rationale": "d6_clean"}])

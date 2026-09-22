@@ -1,7 +1,7 @@
 name: p4_fanout
 catalog: spark_catalog
 database: p4_fanout
-storage: file://__REPO__/pipelines/p4_fanout/pipeline-storage
+storage: file://__REPO__/demos/pipelines/p4_fanout/pipeline-storage
 libraries:
   - glob:
       include: transformations/**

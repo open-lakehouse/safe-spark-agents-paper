@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Deterministic e-commerce CLICKSTREAM source for HC-2 session funnel (v3 §7).
 
-clickstream + user CDC (reuse infra/gen_customers_cdc.py for the user dim) ->
+clickstream + user CDC (reuse generators/gen_customers_cdc.py for the user dim) ->
 30-minute-inactivity sessionization -> funnel rollup + DLQ. One record per line:
   {event_id, user_id, event_type, event_time (ISO), payload}
 

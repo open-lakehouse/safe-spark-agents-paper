@@ -1,7 +1,7 @@
 name: p5_mart
 catalog: spark_catalog
 database: p5_mart
-storage: file://__REPO__/pipelines/p5_mart/pipeline-storage
+storage: file://__REPO__/demos/pipelines/p5_mart/pipeline-storage
 libraries:
   - glob:
       include: transformations/**

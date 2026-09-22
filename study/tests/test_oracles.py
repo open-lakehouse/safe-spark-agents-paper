@@ -28,14 +28,14 @@ STUDY = os.path.dirname(HERE)
 
 def _find_repo_root():
     # Mirrors harness/runner.py: study/ sits two levels deep in the paper repo,
-    # three in the original layout. Walk up to the dir holding infra/ or .git.
+    # three in the original layout. Walk up to the dir holding generators/ or .git.
     env = os.environ.get("STUDY_REPO_ROOT")
     if env:
         return os.path.abspath(env)
     d = HERE
     for _ in range(6):
         d = os.path.dirname(d)
-        if os.path.isdir(os.path.join(d, "infra")) or os.path.isdir(os.path.join(d, ".git")):
+        if os.path.isdir(os.path.join(d, "generators")) or os.path.isdir(os.path.join(d, ".git")):
             return d
     return os.path.normpath(os.path.join(STUDY, "..", ".."))
 
@@ -156,7 +156,7 @@ EXPECTED_D8_DOLLARS = 49778.06
 
 
 def _gen_seed42(path):
-    gen = os.path.join(REPO, "infra", "gen_messy_orders.py")
+    gen = os.path.join(REPO, "generators", "gen_messy_orders.py")
     with open(path, "w") as fo:
         subprocess.run([sys.executable, gen, "--seed", "42"], stdout=fo,
                        stderr=subprocess.DEVNULL, check=True)

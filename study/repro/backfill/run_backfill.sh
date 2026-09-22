@@ -21,9 +21,9 @@ run() {  # $1=task $2=seedfile $3=port_c $4=port_u $5=workdir $6=outfile
 }
 
 # EXAMPLE gaps from the 2026-07-02 baseline run (edit for your own):
-run HC2_session_funnel   seeds_hc2b.json    15041 4081 .work.bf.hc2b   results.bf_hc2b.jsonl   && \
-run new_scd2_as_of_join  seeds_scd2b.json   15042 4082 .work.bf.scd2   results.bf_scd2.jsonl   && \
-run orders_silver_gold   seeds_ordersb.json 15043 4083 .work.bf.orders results.bf_orders.jsonl
+run HC2_session_funnel   seeds_hc2b.json    15041 4081 .work.bf.hc2b   results/results.bf_hc2b.jsonl   && \
+run new_scd2_as_of_join  seeds_scd2b.json   15042 4082 .work.bf.scd2   results/results.bf_scd2.jsonl   && \
+run orders_silver_gold   seeds_ordersb.json 15043 4083 .work.bf.orders results/results.bf_orders.jsonl
 RC=$?
 echo "$(date) === BACKFILL DONE rc=$RC ===" >> "$LOG"
 [ "$RC" -eq 0 ] && echo "now run: python3 $HERE/merge_and_analyze.py" >> "$LOG"

@@ -18,14 +18,14 @@ STUDY = os.path.dirname(HERE)
 
 def _find_repo_root():
     # Mirrors harness/runner.py: study/ sits two levels deep in the paper repo,
-    # three in the original layout. Walk up to the dir holding infra/ or .git.
+    # three in the original layout. Walk up to the dir holding generators/ or .git.
     env = os.environ.get("STUDY_REPO_ROOT")
     if env:
         return os.path.abspath(env)
     d = HERE
     for _ in range(6):
         d = os.path.dirname(d)
-        if os.path.isdir(os.path.join(d, "infra")) or os.path.isdir(os.path.join(d, ".git")):
+        if os.path.isdir(os.path.join(d, "generators")) or os.path.isdir(os.path.join(d, ".git")):
             return d
     return os.path.normpath(os.path.join(STUDY, "..", ".."))
 
@@ -76,8 +76,8 @@ def test_d8_nested_separates_v3_from_v2():
         print("SKIP d8_nested: no pyspark"); return
     q = _load("dbq3", "experiments/defect_battery/quantify.py")
     with tempfile.TemporaryDirectory() as td:
-        v3 = _gen("infra/gen_messy_orders.py", ["--seed", "42", "--v3"], os.path.join(td, "v3.ndjson"))
-        v2 = _gen("infra/gen_messy_orders.py", ["--seed", "42"], os.path.join(td, "v2.ndjson"))
+        v3 = _gen("generators/gen_messy_orders.py", ["--seed", "42", "--v3"], os.path.join(td, "v3.ndjson"))
+        v2 = _gen("generators/gen_messy_orders.py", ["--seed", "42"], os.path.join(td, "v2.ndjson"))
         sp = _spark()
         try:
             n3, d3 = q.q_d8_nested(sp, v3)
@@ -104,7 +104,7 @@ def test_udf_classifier_truth_and_grading():
     assert qu.true_category("RE: ticket 1") == "routing"
     assert qu.true_category("Weekly newsletter") == "info"
     with tempfile.TemporaryDirectory() as td:
-        em = _gen("infra/gen_emails.py", ["--seed", "42"], os.path.join(td, "em.ndjson"))
+        em = _gen("generators/gen_emails.py", ["--seed", "42"], os.path.join(td, "em.ndjson"))
         sp = _spark()
         try:
             opp, det = qu.q_udf(sp, em)
@@ -142,8 +142,8 @@ def test_hc_ground_truth_invariants():
         print("SKIP hc: no pyspark"); return
     hc = _load("dbqhc", "experiments/defect_battery/quantify_hc.py")
     with tempfile.TemporaryDirectory() as td:
-        tr = _gen("infra/gen_trades.py", ["--seed", "42"], os.path.join(td, "tr.ndjson"))
-        ck = _gen("infra/gen_clickstream.py", ["--seed", "42"], os.path.join(td, "ck.ndjson"))
+        tr = _gen("generators/gen_trades.py", ["--seed", "42"], os.path.join(td, "tr.ndjson"))
+        ck = _gen("generators/gen_clickstream.py", ["--seed", "42"], os.path.join(td, "ck.ndjson"))
         sp = _spark()
         try:
             pos = hc.hc1_truth_positions(sp, tr)

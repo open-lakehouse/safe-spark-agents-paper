@@ -65,13 +65,13 @@ These are the *hypothesis*. The *measured* result for every row is in
 ## How to run
 
 ```bash
-bash experiments/defect_battery/run_battery.sh
-cat  experiments/defect_battery/results.jsonl
+bash defect_battery/run_battery.sh
+cat  defect_battery/results.jsonl
 ```
 
 The harness:
 
-1. Generates the deterministic seed=42 dataset (`infra/gen_messy_orders.py`,
+1. Generates the deterministic seed=42 dataset (`generators/gen_messy_orders.py`,
    5276 messy rows) into a gitignored `.work/`.
 2. Stands up one Spark Connect server with the Kafka connector on the launch
    classpath and `spark.sql.artifact.isolation` **off**, then runs the real SDP
@@ -95,4 +95,4 @@ The harness:
    either).
 
 Requires a pyspark 4.1 with the `pipelines` module and the connector jars under
-`<repo>/jars/`. Verified on `pyspark 4.1.0.dev4`.
+`<repo>/connect/jars/`. Verified on `pyspark 4.1.0.dev4`.

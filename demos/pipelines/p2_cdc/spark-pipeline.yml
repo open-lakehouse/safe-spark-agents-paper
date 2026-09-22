@@ -1,7 +1,7 @@
 name: p2_cdc
 catalog: spark_catalog
 database: p2_cdc
-storage: file://__REPO__/pipelines/p2_cdc/pipeline-storage
+storage: file://__REPO__/demos/pipelines/p2_cdc/pipeline-storage
 libraries:
   - glob:
       include: transformations/**

@@ -111,7 +111,7 @@ analyze() {
   SPARK_HOME="$(python3 -c 'import pyspark,os;print(os.path.dirname(pyspark.__file__))')" \
   python3 analysis/analyze.py "$OUT_DIR/results.h3_eks.jsonl" \
     --assume-backend live \
-    --tasks TASKS.lock.json \
+    --tasks config/TASKS.lock.json \
     --md-out "$OUT_DIR/HEADLINE.h3_eks.md" \
     --json-out "$OUT_DIR/REPORT.h3_eks.json"
   echo "H3.1 requires the P2 per-attempt fields in per_iteration (runner.py:258-260)."

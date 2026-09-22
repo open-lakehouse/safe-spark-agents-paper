@@ -6,8 +6,8 @@ architecture that result motivates. Everything here is self-contained: paper, co
 
 - 📄 **Read the paper**: [`paper/PAPER.md`](paper/PAPER.md) · rendered reading site: **[`docs/index.html`](docs/index.html)** (GitHub Pages)
 - 🔬 **Reproduce it**: [`reproduce/REPRODUCE.md`](reproduce/REPRODUCE.md) + [`reproduce/ENV_SETUP.md`](reproduce/ENV_SETUP.md), byte-identical, built to re-run against future Spark releases
-- 🧪 **Study code**: [`study/`](study/), harness, arms, analysis, frozen corpus/seeds, and the committed result files behind every number
-- 🏗️ **Reference architecture**: [`deploy/`](deploy/) + [`connect/`](connect/) + [`infra/`](infra/), the governed Spark-Connect-on-Kubernetes platform (Sections 2–3)
+- 🧪 **Study code**: [`study/`](study/), harness, arms, frozen corpus/seeds, and the committed result files behind every number
+- 🏗️ **Reference architecture**: [`deploy/`](deploy/) the governed Spark-Connect-on-Kubernetes platform (Sections 3–4)
 
 ## What the study found
 
@@ -33,12 +33,16 @@ itself less safe on semantic ones, provided it is paired with a paradigm-matched
 | [`paper/`](paper/) | the paper (`PAPER.md`), figures (`diagrams/`), the reader generator (`tools/render_reader.py`), working notes |
 | [`docs/`](docs/) | the rendered static site (GitHub Pages) |
 | [`reproduce/`](reproduce/) | reproduction index + environment setup + link to the raw-run archive |
+| [`study/`](study/) | the experiment: harness, arms, skills, prompts, pilot, GitOps demo, tests |
+| [`study/config/`](study/config/) | frozen corpus + seeds + controlled config + published row schema |
+| [`study/results/`](study/results/) | committed result files (and env/quarantine sidecars) behind every number |
+| [`study/reporting/`](study/reporting/) | POWERED / SUPPLEMENTAL headline and report artifacts |
+| [`defect_battery/`](defect_battery/) | the single-source grading oracle (`quantify*.py`) + E3 defect variants the blind grader imports (deliberately kept at the root) |
+| [`generators/`](generators/) | deterministic NDJSON data generators (per `(task, seed)` byte-identical input) |
+| [`demos/`](demos/) | five runnable demos + the `pipelines/p1–p5` SDP specs they exercise |
+| [`connect/`](connect/) | Spark Connect client + smoke test + local launcher scripts + bundled Kafka connector jars |
+| [`deploy/`](deploy/) | the governed Connect-on-Kubernetes reference architecture (Terraform, k8s, systemd) |
 | [`config/`](config/) | `aws.env.example`: copy to `config/aws.env` (gitignored) and fill in your own AWS values |
-| [`study/`](study/) | the experiment: harness, arms, skills, prompts, generators, locks, results |
-| [`defect_battery/`](defect_battery/) | the single-source grading oracle (`quantify*.py`) + the E3 defect variants the blind grader imports |
-| [`demos/`](demos/) | five runnable demos showing the paper's application from a developer's chair |
-| [`scripts/`](scripts/) | `start/stop-connect-server.sh`: the local Spark Connect launcher `deploy/connect-server/` documents |
-| [`deploy/`](deploy/), [`connect/`](connect/), [`infra/`](infra/) | the governed Connect-on-Kubernetes reference architecture |
 
 ## Configuration & safety
 

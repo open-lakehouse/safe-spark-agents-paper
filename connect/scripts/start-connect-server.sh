@@ -14,13 +14,13 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 # --- defaults (env overridable; flags override env) -----------------------------------------
 port="${SPARK_CONNECT_PORT:-15002}"
 warehouse_dir="${SPARK_CONNECT_WAREHOUSE_DIR:-/srv/spark/warehouse}"
 driver_memory="${SPARK_CONNECT_DRIVER_MEMORY:-20g}"   # sized for an r7i.xlarge (32 GiB) box
-jars="${SPARK_CONNECT_JARS:-}"                          # empty => glob "$REPO_ROOT"/jars/*.jar
+jars="${SPARK_CONNECT_JARS:-}"                          # empty => glob "$REPO_ROOT"/connect/jars/*.jar
 conf_dir="${SPARK_CONF_DIR:-$REPO_ROOT/deploy/connect-server/conf}"
 pid_file="${SPARK_CONNECT_PID_FILE:-/srv/spark/run/spark-connect.pid}"
 log_file="${SPARK_CONNECT_LOG_FILE:-/srv/spark/logs/spark-connect.log}"
@@ -42,7 +42,7 @@ Options:
   --port PORT              gRPC binding port            (default: ${port})
   --warehouse-dir DIR      spark.sql.warehouse.dir      (default: ${warehouse_dir})
   --driver-memory MEM      driver heap, e.g. 20g        (default: ${driver_memory})
-  --jars CSV               extra jars (comma-separated)  (default: glob ${REPO_ROOT}/jars/*.jar)
+  --jars CSV               extra jars (comma-separated)  (default: glob ${REPO_ROOT}/connect/jars/*.jar)
   --conf-dir DIR           SPARK_CONF_DIR for defaults  (default: ${conf_dir})
   --pid-file PATH          PID file path                (default: ${pid_file})
   --log-file PATH          log file path (fork mode)    (default: ${log_file})
@@ -96,7 +96,7 @@ fi
 # --- defaults that depend on parsed values --------------------------------------------------
 if [[ -z "$jars" ]]; then
   shopt -s nullglob
-  jar_glob=("$REPO_ROOT"/jars/*.jar)
+  jar_glob=("$REPO_ROOT"/connect/jars/*.jar)
   shopt -u nullglob
   if [[ ${#jar_glob[@]} -gt 0 ]]; then
     IFS=, jars="${jar_glob[*]}"; unset IFS
@@ -133,7 +133,7 @@ wait_for_port() {
 # --- idempotency: refuse to start if the port is already bound ------------------------------
 if port_open "$port"; then
   echo "ERROR: port ${port} is already accepting connections — a Connect server appears to be running." >&2
-  echo "       Stop it first (scripts/stop-connect-server.sh) or pick another --port." >&2
+  echo "       Stop it first (connect/scripts/stop-connect-server.sh) or pick another --port." >&2
   exit 1
 fi
 

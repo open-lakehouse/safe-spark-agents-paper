@@ -1,7 +1,7 @@
 name: D1_missing_col
 catalog: spark_catalog
 database: default
-storage: file://__REPO__/experiments/defect_battery/variants/D1_missing_col/pipeline-storage
+storage: file://__REPO__/defect_battery/variants/D1_missing_col/pipeline-storage
 libraries:
   - glob:
       include: transformations/**

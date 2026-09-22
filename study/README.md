@@ -8,8 +8,8 @@ unconstrained imperative-PySpark agent (Arm A), and whether the gate **saves
 compute** — with the two ablations (B1 = SDP-only, B2 = gate-only) that turn
 "B is better" into "*here is which component does the work*".
 
-> **Status: instrument built + validated offline. The sweep/pilot has NOT been
-> run** (awaiting GO + the finalized Spark Connect backend). See `DEVIATIONS.md`.
+> **Status: powered run complete** (Section 1 is the reported study; results in
+> `results/`, headlines in `reporting/`). See `DEVIATIONS.md` for the as-run record.
 
 ## Layout
 
@@ -17,10 +17,13 @@ compute** — with the two ablations (B1 = SDP-only, B2 = gate-only) that turn
 safe_agent_study/
   PREREGISTRATION.md     the binding design (hypotheses, arms, metrics, analysis)
   DEVIATIONS.md          D-0 RESOLVED (corpus 6->15) + impl notes
-  TASKS.lock.json        frozen 15-task corpus (3 substrates) + balanced defects
-  SEEDS.lock.json        fixed integer seeds (pilot = 10; no upper cap)
-  study.config.json      SHARED controlled config (model, prompt path, cluster/$)
-  results_schema.json    machine-readable results.jsonl row contract
+  config/
+    TASKS.lock.json      frozen 22-task corpus (3 substrates) + balanced defects
+    SEEDS.lock.json      fixed integer seeds
+    study.config.json    SHARED controlled config (model, prompt path, cluster/$)
+    results_schema.json  machine-readable results.jsonl row contract
+  results/               committed result files + env/quarantine sidecars behind every number
+  reporting/             POWERED / SUPPLEMENTAL headline + report artifacts
   prompts/task_prompt.md the ONE task prompt every arm receives
   arms/{A,B,B1,B2}.json   arm manifests (only the LOOP fields differ)
   harness/
@@ -48,13 +51,13 @@ The E3 defect battery it builds on lives at `../defect_battery/` (variants +
 
 ### Task corpus (15 tasks, 3 substrates)
 
-`TASKS.lock.json` freezes 15 realistic pipelines over three independent data
+`config/TASKS.lock.json` freezes 22 realistic pipelines over three independent data
 substrates, so each semantic defect class is corroborated on more than one
 dataset (not a single-dataset artifact):
 
-- **orders** (`infra/gen_messy_orders.py`, ref seed 42) — D2/D6/D7/D8 via `quantify.py`
-- **customer-CDC** (`infra/gen_customers_cdc.py`, ref seed 7) — D6 via `quantify_ext.cdc_d6`
-- **multi-currency payments** (`infra/gen_payments.py`, ref seed 42) — D7/D8 via `quantify_ext.pay_d7|pay_d8`
+- **orders** (`generators/gen_messy_orders.py`, ref seed 42) — D2/D6/D7/D8 via `quantify.py`
+- **customer-CDC** (`generators/gen_customers_cdc.py`, ref seed 7) — D6 via `quantify_ext.cdc_d6`
+- **multi-currency payments** (`generators/gen_payments.py`, ref seed 42) — D7/D8 via `quantify_ext.pay_d7|pay_d8`
 
 Every D1–D9 class is exhibited by ≥5 tasks (coverage matrix asserted by
 `tests/test_corpus.py`). Each task carries a per-task `prompt` (the engineering
@@ -67,7 +70,7 @@ not aspirational:
 
 - The **controlled** variables — base model, task prompt text, sampling params,
   max iterations, and the per-seed input data — come from ONE shared place
-  (`study.config.json` + `prompts/task_prompt.md`), and each arm manifest repeats
+  (`config/study.config.json` + `prompts/task_prompt.md`), and each arm manifest repeats
   them verbatim.
 - `arm_manifest.assert_identical_except_loop()` runs at load time and **refuses
   to start** if any two arms differ on a controlled field. Only these LOOP fields
@@ -96,7 +99,7 @@ Per iteration (`harness/cost.py`):
 - **execute** iteration = ran on the cluster → executor-seconds from the Spark
   REST API (`/applications/<id>/executors` `totalDuration`), or a declared
   `wall_s × instances` fallback; USD = `executor_seconds/3600 × price/executor-hr`
-  at the price in `study.config.json` (carried into every row).
+  at the price in `config/study.config.json` (carried into every row).
 
 `compute-to-correct` sums executor-seconds up to and including the first green
 iteration; the **dry-run intercept fraction** = failing iterations caught at the
@@ -143,8 +146,8 @@ python3 analysis/analyze.py results.jsonl --env results.env.json --md-out HEADLI
 python3 harness/runner.py --backend replay --replay-trace tests/fixtures/pilot_episodes.json
 
 # the real sweep (needs ANTHROPIC_API_KEY + a reachable sc:// backend):
-python3 harness/runner.py --backend live --config study.config.json \
-        --arms-dir arms --tasks TASKS.lock.json --seeds SEEDS.lock.json \
+python3 harness/runner.py --backend live --config config/study.config.json \
+        --arms-dir arms --tasks config/TASKS.lock.json --seeds config/SEEDS.lock.json \
         --out results.jsonl
 python3 analysis/analyze.py results.jsonl --env results.env.json --md-out HEADLINE.md
 
@@ -152,8 +155,8 @@ python3 analysis/analyze.py results.jsonl --env results.env.json --md-out HEADLI
 # DEVIATIONS D-7). Isolates the imperative-vs-SDP paradigm: imperative arms (A, B2)
 # run on classic local[*] Spark; SDP arms (B, B1) on a local single-node Spark
 # Connect server the runner starts and stops itself. Local file:// for both engines.
-python3 harness/runner.py --backend local --config study.config.json \
-        --arms-dir arms --tasks TASKS.lock.json --seeds SEEDS.lock.json \
+python3 harness/runner.py --backend local --config config/study.config.json \
+        --arms-dir arms --tasks config/TASKS.lock.json --seeds config/SEEDS.lock.json \
         --out results_part1.jsonl
 #   --local-connect-port (default 15002) / --local-ui-port (default 4040; the
 #   imperative LocalSparkExecutor UI uses +1) size the local Connect server.

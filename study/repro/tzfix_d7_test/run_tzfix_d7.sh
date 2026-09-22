@@ -8,7 +8,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STUDY="$(cd "$HERE/../.." && pwd)"                 # repro/tzfix_d7_test -> experiments/safe_agent_study
 SKILL="$STUDY/skills/pyspark-sdp/SKILL.md"
 BACKUP="$HERE/pyspark-sdp.SKILL.frozen.bak"
-OUT="$STUDY/results.tzfix.jsonl"
+OUT="$STUDY/results/results.tzfix.jsonl"
 LOG="$STUDY/tzfix.log"
 cd "$STUDY" || exit 1
 

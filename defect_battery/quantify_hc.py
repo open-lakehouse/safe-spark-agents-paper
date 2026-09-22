@@ -24,19 +24,21 @@ import sys
 
 def _load_fx():
     here = os.path.dirname(os.path.abspath(__file__))
-    # infra/ is a sibling of experiments/ in the original layout and of this dir in
-    # the paper repo; walk up to whichever parent holds it (STUDY_REPO_ROOT overrides).
+    # generators/ sits at the repo root; walk up to whichever parent holds it
+    # (STUDY_REPO_ROOT overrides).
     root = os.environ.get("STUDY_REPO_ROOT")
     if not root:
         d = here
         for _ in range(6):
             d = os.path.dirname(d)
-            if os.path.isdir(os.path.join(d, "infra")):
+            if os.path.isdir(os.path.join(d, "generators")) or os.path.isdir(os.path.join(d, "infra")):
                 root = d
                 break
         else:
             root = os.path.normpath(os.path.join(here, "..", ".."))
-    fxpath = os.path.join(root, "infra", "fx.py")
+    fxpath = os.path.join(root, "generators", "fx.py")
+    if not os.path.exists(fxpath):  # pre-reorganization layout compat
+        fxpath = os.path.join(root, "infra", "fx.py")
     spec = importlib.util.spec_from_file_location("infra_fx", fxpath)
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)

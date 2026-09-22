@@ -30,14 +30,14 @@ STUDY = os.path.dirname(HERE)
 
 def _find_repo_root():
     # Mirrors harness/runner.py: study/ sits two levels deep in the paper repo,
-    # three in the original layout. Walk up to the dir holding infra/ or .git.
+    # three in the original layout. Walk up to the dir holding generators/ or .git.
     env = os.environ.get("STUDY_REPO_ROOT")
     if env:
         return os.path.abspath(env)
     d = HERE
     for _ in range(6):
         d = os.path.dirname(d)
-        if os.path.isdir(os.path.join(d, "infra")) or os.path.isdir(os.path.join(d, ".git")):
+        if os.path.isdir(os.path.join(d, "generators")) or os.path.isdir(os.path.join(d, ".git")):
             return d
     return os.path.normpath(os.path.join(STUDY, "..", ".."))
 
@@ -200,14 +200,14 @@ def _cfg(tmp):
         base_model_id="claude-sonnet-4-6",
         task_prompt_path=os.path.join(STUDY, "prompts", "task_prompt.md"),
         executor_config=costmod.ExecutorConfig(4, 4, 16.0, 0.192, "local", "local"),
-        generator="infra/gen_messy_orders.py",
+        generator="generators/gen_messy_orders.py",
     )
 
 
 def _run_case(tmp, case_id, code, warehouse, arm):
     contract = dict(CONTRACT, table=f"gold_{case_id}")
     task_spec = {"id": case_id, "defects_in_scope": ["D2", "D8"],
-                 "input": "infra/gen_messy_orders.py", "output_contract": contract}
+                 "input": "generators/gen_messy_orders.py", "output_contract": contract}
     proposals = [{"code": code, "command": "python", "rationale": case_id}]
 
     def make_brain(task, a, seed):
@@ -284,7 +284,7 @@ def test_completion_check_flags_missing_output_path():
         ds = os.path.join(tmp, "orders.ndjson")
         import subprocess
         with open(ds, "w") as fo:
-            subprocess.run([sys.executable, os.path.join(REPO, "infra", "gen_messy_orders.py"),
+            subprocess.run([sys.executable, os.path.join(REPO, "generators", "gen_messy_orders.py"),
                             "--seed", "42", "--N", "200"], stdout=fo, stderr=subprocess.DEVNULL, check=True)
         ws = os.path.join(tmp, "ws"); os.makedirs(ws, exist_ok=True)
         open(os.path.join(ws, "pipeline.py"), "w").write(NO_OUTPUT)
@@ -357,7 +357,7 @@ def test_path_imperative_grades_d6_secondary_dedup_from_disk_after_stop():
             contract = dict(CONTRACT, table=f"gold_{task_id}", dedup_table=dedup_table,
                             key_col="order_id", payload_cols=["amount", "category"])
             task_spec = {"id": task_id, "defects_in_scope": ["D6"],
-                         "input": "infra/gen_messy_orders.py", "output_contract": contract}
+                         "input": "generators/gen_messy_orders.py", "output_contract": contract}
             def make_brain(task, a, seed):
                 return ScriptedBrain([{"code": code, "command": "python", "rationale": case}])
             def make_executor(task, a, seed):
@@ -399,7 +399,7 @@ def test_executor_seconds_are_delta_not_cumulative():
         ds = os.path.join(tmp, "orders.ndjson")
         import subprocess
         with open(ds, "w") as fo:
-            subprocess.run([sys.executable, os.path.join(REPO, "infra", "gen_messy_orders.py"),
+            subprocess.run([sys.executable, os.path.join(REPO, "generators", "gen_messy_orders.py"),
                             "--seed", "42", "--N", "400"], stdout=fo, stderr=subprocess.DEVNULL, check=True)
         ws = os.path.join(tmp, "ws"); os.makedirs(os.path.join(ws, "transformations"), exist_ok=True)
         for rel in ("pipeline.py",):

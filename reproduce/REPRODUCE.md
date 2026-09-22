@@ -9,8 +9,8 @@ numbers from committed result files; (2) re-run the agents from scratch. Environ
 - **Instrument:** frozen `instrument-v3.2-frozen`; every result row is stamped with `git_sha`,
   `image_digest`, `spark_version`, `base_model_id`, so instrument drift is detectable.
 - **Determinism:** input data is a pure function of `(generator, args, seed)`. The 12 seeds are locked in
-  [`../study/SEEDS.lock.json`](../study/SEEDS.lock.json); the 22 tasks in
-  [`../study/TASKS.lock.json`](../study/TASKS.lock.json). Same seed → byte-identical data.
+  [`../study/config/SEEDS.lock.json`](../study/config/SEEDS.lock.json); the 22 tasks in
+  [`../study/config/TASKS.lock.json`](../study/config/TASKS.lock.json). Same seed → byte-identical data.
 
 ## 1. Recompute the paper's numbers (no LLM, no cluster)
 The result files behind every number are committed under [`../study/`](../study/):
@@ -19,7 +19,7 @@ The result files behind every number are committed under [`../study/`](../study/
 
 ```bash
 cd study
-python3 analysis/analyze.py results.powered.AB.n12.final.jsonl --tasks TASKS.lock.json --assume-backend local
+python3 analysis/analyze.py results/results.powered.AB.n12.final.jsonl --tasks config/TASKS.lock.json --assume-backend local
 ```
 
 ## 2. Re-run the agents (LLM + Spark)
@@ -37,8 +37,8 @@ For the *full* replay archive (additionally every generated input, every materia
 every grade) download the larger archive from the GitHub **Release** and extract it into `study/`:
 
 ```bash
-# GitHub Release: https://github.com/lisancao/safe-spark-agents-paper/releases/tag/v1-repro
-gh release download v1-repro --repo lisancao/safe-spark-agents-paper --pattern 'ssa-repro-archive.tar.gz'
+# GitHub Release: https://github.com/open-lakehouse/safe-spark-agents-paper/releases/tag/v1-repro
+gh release download v1-repro --repo open-lakehouse/safe-spark-agents-paper --pattern 'ssa-repro-archive.tar.gz'
 tar xzf ssa-repro-archive.tar.gz -C study/
 ```
 

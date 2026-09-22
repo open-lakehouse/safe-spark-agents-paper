@@ -5,9 +5,9 @@ import json, os, subprocess
 HERE = os.path.dirname(os.path.abspath(__file__))
 STUDY = os.path.normpath(os.path.join(HERE, "..", ".."))
 os.chdir(STUDY)
-PRIMARY = "results.powered.AB.n12.final.jsonl"     # frozen A + frozen B
-RERUN_B = "results.h1rerun.B.jsonl"                 # fixed-skill B
-MERGED = "results.h1rerun.final.jsonl"
+PRIMARY = "results/results.powered.AB.n12.final.jsonl"  # frozen A + frozen B
+RERUN_B = "results/results.h1rerun.B.jsonl"             # fixed-skill B
+MERGED = "results/results.h1rerun.final.jsonl"
 
 def load(p): return [json.loads(l) for l in open(p) if l.strip()] if os.path.exists(p) else []
 def key(r): return ((r.get("task") or r.get("task_id")), r.get("arm"), r.get("seed"))
@@ -46,7 +46,7 @@ print(f"=== D7 ships (arm B): frozen {d7('B', prim)}  ->  fixed {d7('B', reB)} =
 env = dict(os.environ)
 import pyspark
 env["SPARK_HOME"] = os.path.dirname(pyspark.__file__)
-subprocess.run(["python3", "analysis/analyze.py", MERGED, "--tasks", "TASKS.lock.json",
+subprocess.run(["python3", "analysis/analyze.py", MERGED, "--tasks", "config/TASKS.lock.json",
                 "--assume-backend", "local", "--md-out", "H1RERUN_HEADLINE.md",
                 "--json-out", "H1RERUN_REPORT.json"], env=env)
 print("[merge] -> H1RERUN_HEADLINE.md + H1RERUN_REPORT.json")

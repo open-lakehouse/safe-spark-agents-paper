@@ -1,7 +1,7 @@
 name: D7_timezone_bug
 catalog: spark_catalog
 database: default
-storage: file://__REPO__/experiments/defect_battery/variants/D7_timezone_bug/pipeline-storage
+storage: file://__REPO__/defect_battery/variants/D7_timezone_bug/pipeline-storage
 libraries:
   - glob:
       include: transformations/**

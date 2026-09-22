@@ -9,8 +9,8 @@ day**, so taking the date in the wrong timezone now also picks the wrong *rate*
 oracle-checkable, the rate is a PURE function of (currency, UTC date) defined
 here and imported verbatim by:
 
-  * infra/gen_payments.py        (stamps the messy stream)
-  * infra/gen_fx_rates_cdc.py    (emits the rate-change feed the agent must join)
+  * generators/gen_payments.py        (stamps the messy stream)
+  * generators/gen_fx_rates_cdc.py    (emits the rate-change feed the agent must join)
   * experiments/defect_battery/quantify_ext.py  (pay_d7 / pay_d8 ground truth)
   * harness/output_oracles.py    (live USD reconciliation truth)
 

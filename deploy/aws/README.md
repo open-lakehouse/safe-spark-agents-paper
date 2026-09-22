@@ -52,7 +52,7 @@ Manager** — there is **no public SSH and no public 15002**.
 | Durability     | ASG self-heal + persistent data volume re-attach + **DLM daily snapshots** |
 
 The server process (launcher + systemd unit) is authored by a **separate task** at
-`scripts/start-connect-server.sh`, `scripts/stop-connect-server.sh`, and
+`connect/scripts/start-connect-server.sh`, `connect/scripts/stop-connect-server.sh`, and
 `deploy/connect-server/spark-connect.service`. The EC2 user-data **clones this repo and
 installs those paths** — it does not author them.
 

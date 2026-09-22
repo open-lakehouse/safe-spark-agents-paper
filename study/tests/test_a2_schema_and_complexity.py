@@ -23,8 +23,8 @@ import pytest                                                        # noqa: E40
 import analyze                                                       # noqa: E402
 from harness.schema import RESULTS_JSON_SCHEMA, ResultRow, validate_row  # noqa: E402
 
-PUBLISHED = os.path.join(STUDY, "results_schema.json")
-TASKS = os.path.join(STUDY, "TASKS.lock.json")
+PUBLISHED = os.path.join(STUDY, "config", "results_schema.json")
+TASKS = os.path.join(STUDY, "config", "TASKS.lock.json")
 
 
 def _a2_row():

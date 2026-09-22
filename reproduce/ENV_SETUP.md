@@ -30,7 +30,7 @@ measurement needs the EKS cluster.
 ```bash
 cd study
 # recompute the paper's numbers from committed results (no LLM, no Spark):
-python3 analysis/analyze.py results.powered.AB.n12.final.jsonl --tasks TASKS.lock.json --assume-backend local
+python3 analysis/analyze.py results/results.powered.AB.n12.final.jsonl --tasks config/TASKS.lock.json --assume-backend local
 # re-run agents (needs ANTHROPIC_API_KEY + a local Spark Connect endpoint):
 #   see study/repro/REPRODUCE.md for the exact runner.py invocation
 ```

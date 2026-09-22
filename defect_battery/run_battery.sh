@@ -36,7 +36,7 @@
 #
 # Requires: a pyspark 4.1 with the pipelines module (provides
 # `pipelines/cli.py` + `spark-class`/`spark-submit`), a JDK, and the connector
-# jars committed under <repo>/jars/. No Kafka broker is required: dry-run reads
+# jars committed under <repo>/connect/jars/. No Kafka broker is required: dry-run reads
 # no data and the quantification reads the generated NDJSON file.
 #
 set -euo pipefail
@@ -68,7 +68,7 @@ JAR_NAMES=(
   "kafka-clients-3.9.0.jar"
   "commons-pool2-2.12.0.jar"
 )
-jar_csv() { local IFS=,; echo "${JAR_NAMES[*]/#/$REPO/jars/}"; }
+jar_csv() { local IFS=,; echo "${JAR_NAMES[*]/#/$REPO/connect/jars/}"; }
 KJARS="$(jar_csv)"
 
 # --- defect registry: id | dir | class | quantify-key (or -) ---------------
@@ -181,7 +181,7 @@ gen_dataset() {
   local out="$WORK/orders.ndjson"
   if [ ! -s "$out" ]; then
     log "generating deterministic messy orders dataset (seed=42)"
-    "$PYBIN" "$REPO/infra/gen_messy_orders.py" > "$out" 2> "$WORK/data-profile.txt"
+    "$PYBIN" "$REPO/generators/gen_messy_orders.py" > "$out" 2> "$WORK/data-profile.txt"
   fi
   wc -l < "$out"
 }
@@ -281,7 +281,7 @@ write_summary() {
     echo "Real runs on pyspark \`$SPARK_VERSION\` (Spark Declarative Pipelines,"
     echo "\`pipelines/cli.py dry-run\` against a self-managed Spark Connect server"
     echo "with the Kafka connector on the classpath). Dataset: $nrows-row deterministic"
-    echo "\`infra/gen_messy_orders.py\` (seed=42). Generated $(date -u '+%Y-%m-%dT%H:%M:%SZ')."
+    echo "\`generators/gen_messy_orders.py\` (seed=42). Generated $(date -u '+%Y-%m-%dT%H:%M:%SZ')."
     echo
     echo "Each row of \`results.jsonl\` is one (defect, approach). \`sdp_dry_run\` is the"
     echo "real SDP analysis gate; \`batch_materialize\` quantifies the silent corruption"
@@ -362,8 +362,8 @@ PY
     echo "## How to reproduce"
     echo
     echo '```bash'
-    echo "bash experiments/defect_battery/run_battery.sh"
-    echo "cat experiments/defect_battery/results.jsonl"
+    echo "bash defect_battery/run_battery.sh"
+    echo "cat defect_battery/results.jsonl"
     echo '```'
   } > "$RESULTS_MD"
 }

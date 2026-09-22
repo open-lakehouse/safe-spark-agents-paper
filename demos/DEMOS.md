@@ -22,7 +22,7 @@ For a platform/security audience: 1 + 4 + 5.
 
 ## Shared prep (once, ~10 minutes)
 
-All demos assume this repo (`~/sdp-paper-local`) and the host toolchain already present:
+All demos assume this repo (`<repo>`, e.g. `~/safe-spark-agents-paper`) and the host toolchain already present:
 PySpark 4.1.0.dev4 and the `spark-pipelines` CLI on PATH, Java 17 installed, `ANTHROPIC_API_KEY` set.
 
 ```bash
@@ -30,7 +30,7 @@ PySpark 4.1.0.dev4 and the `spark-pipelines` CLI on PATH, Java 17 installed, `AN
 export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 
 # 2. Local Spark Connect server (demos 1, 2, 4). Runner-local, port 15055.
-cd ~/sdp-paper-local/study/gitops_demo && ./local_spark_connect.sh start
+cd <repo>/study/gitops_demo && ./local_spark_connect.sh start
 
 # 3. EKS (demo 5 only): confirm the cluster and tenant servers are up
 kubectl config current-context        # arn:...:cluster/ssa-spark-eks
@@ -60,7 +60,7 @@ Spark 4.1, which is worth saying out loud: nothing here is Databricks-proprietar
 
 ```bash
 mkdir -p /tmp/demo1/transformations && cd /tmp/demo1
-python3 ~/sdp-paper-local/infra/gen_messy_orders.py --seed 42 --N 50000 > orders.ndjson
+python3 <repo>/generators/gen_messy_orders.py --seed 42 --N 50000 > orders.ndjson
 ```
 
 `spark-pipeline.yml`:
@@ -135,15 +135,15 @@ measured.
 **Script.**
 
 1. Show the task brief first so the audience knows what the agent was asked
-   (`orders_silver_gold` in `study/TASKS.lock.json`: Kafka-shaped messy orders to silver to a gold
+   (`orders_silver_gold` in `study/config/TASKS.lock.json`: Kafka-shaped messy orders to silver to a gold
    daily revenue rollup).
 2. Launch the cell (this is the SM6.8-verified invocation, narrowed to one cell):
 
 ```bash
-cd ~/sdp-paper-local/study
+cd <repo>/study
 python3 harness/runner.py \
-  --backend local --config study.config.json --arms-dir arms \
-  --tasks TASKS.lock.json --seeds SEEDS.lock.json \
+  --backend local --config config/study.config.json --arms-dir arms \
+  --tasks config/TASKS.lock.json --seeds config/SEEDS.lock.json \
   --only-tasks orders_silver_gold --only-arms B --max-seeds 1 \
   --out /tmp/demo2/results.jsonl --work-dir /tmp/demo2/work \
   --per-cell-timeout 1800
@@ -203,9 +203,9 @@ EOF
    no Spark and no model needed:
 
 ```bash
-cd ~/sdp-paper-local/study
-python3 analysis/analyze.py results.powered.AB.n12.final.jsonl \
-  --tasks TASKS.lock.json --assume-backend local
+cd <repo>/study
+python3 analysis/analyze.py results/results.powered.AB.n12.final.jsonl \
+  --tasks config/TASKS.lock.json --assume-backend local
 ```
 
 **The money moment.** "What you just watched in two panes is one cell. Here are all 528," and the
@@ -233,7 +233,7 @@ are in this repo, so a real PR triggers the real gate.
 1. *Prove the handcuffs first.* Before showing what the author does, show what it cannot do:
 
 ```bash
-cd ~/sdp-paper-local/study/gitops_demo
+cd <repo>/study/gitops_demo
 SPARK_REMOTE=sc://localhost:15055 python3 agent_pr_author.py --task tasks/orders_silver_gold.json \
   --pipeline-slug should-refuse   # refuses: exits nonzero because SPARK_REMOTE is set
 python3 -m pytest tests/ -q       # boundary tests: no pyspark import, git/gh-only subprocess allowlist

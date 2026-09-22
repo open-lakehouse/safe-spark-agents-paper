@@ -69,23 +69,25 @@ def _orders_true_total(spark, input_path: str) -> float:
 
 
 def _load_fx():
-    """The ONE daily-FX source of truth (infra/fx.py)."""
+    """The ONE daily-FX source of truth (generators/fx.py)."""
     import importlib.util
     import os
     here = os.path.dirname(os.path.abspath(__file__))
-    # Mirrors runner.py._find_repo_root: infra/ sits at the repo root, which is two
+    # Mirrors runner.py._find_repo_root: generators/ sits at the repo root, which is two
     # levels up in the paper repo and three in the original layout. Walk up.
     root = os.environ.get("STUDY_REPO_ROOT")
     if not root:
         d = here
         for _ in range(6):
             d = os.path.dirname(d)
-            if os.path.isdir(os.path.join(d, "infra")):
+            if os.path.isdir(os.path.join(d, "generators")) or os.path.isdir(os.path.join(d, "infra")):
                 root = d
                 break
         else:
             root = os.path.normpath(os.path.join(here, "..", "..", ".."))
-    fxpath = os.path.join(root, "infra", "fx.py")
+    fxpath = os.path.join(root, "generators", "fx.py")
+    if not os.path.exists(fxpath):  # pre-reorganization layout compat
+        fxpath = os.path.join(root, "infra", "fx.py")
     spec = importlib.util.spec_from_file_location("infra_fx", fxpath)
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)

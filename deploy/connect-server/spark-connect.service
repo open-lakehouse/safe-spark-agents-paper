@@ -39,8 +39,8 @@ EnvironmentFile=-/etc/spark-connect.env
 # (a child of the launcher, not the MainPID) deliver the readiness message.
 Type=notify
 NotifyAccess=all
-ExecStart=/opt/safe-spark-agents/scripts/start-connect-server.sh --foreground
-ExecStop=/opt/safe-spark-agents/scripts/stop-connect-server.sh
+ExecStart=/opt/safe-spark-agents/connect/scripts/start-connect-server.sh --foreground
+ExecStop=/opt/safe-spark-agents/connect/scripts/stop-connect-server.sh
 
 # --- supervision ----------------------------------------------------------------------------
 Restart=always

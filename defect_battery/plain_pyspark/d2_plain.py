@@ -15,7 +15,7 @@ from pyspark.sql.types import (
     DoubleType,
 )
 
-J = "__REPO__/jars"
+J = "__REPO__/connect/jars"
 jars = ",".join(
     f"{J}/{x}"
     for x in [

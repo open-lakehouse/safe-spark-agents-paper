@@ -28,7 +28,7 @@ any released Spark*:
 | Spark | `apache/spark:4.1.2` (released) | Spark `master` / `5.0.0-SNAPSHOT` (source build) |
 | Iceberg runtime | `iceberg-spark-runtime-4.1_2.13:1.11.0` (**released**, Maven Central, 2026‑05‑19) | custom **iceberg‑port** jar (Iceberg `main` patched onto Spark 5.0) |
 | `create_auto_cdc_flow` | ❌ not present (Spark‑master only) | ✅ native `create_auto_cdc_flow(stored_as_scd_type=1)` → Iceberg |
-| SCD | hand‑rolled MERGE (window + `MERGE INTO`) — see [`pipelines/p2_cdc`](../../../pipelines/p2_cdc) | native AUTO CDC |
+| SCD | hand‑rolled MERGE (window + `MERGE INTO`) — see [`pipelines/p2_cdc`](../../../demos/pipelines/p2_cdc) | native AUTO CDC |
 | Build status here | **built & verified** (`docker build` passed; checksums verified) | **documented + parameterized** (not rebuilt from scratch) |
 
 ### Feasibility verdict (resolved before building — evidence)

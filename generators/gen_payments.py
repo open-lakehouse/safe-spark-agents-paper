@@ -31,7 +31,7 @@ conversion is a pure function of (currency, UTC date).
 import argparse, json, os, random, sys, datetime as dt
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import fx as _fx   # the ONE daily-FX source of truth (infra/fx.py)
+import fx as _fx   # the ONE daily-FX source of truth (generators/fx.py)
 
 _ap = argparse.ArgumentParser(description="Deterministic multi-currency payments NDJSON on stdout.")
 _ap.add_argument("--seed", type=int, default=42, help="RNG seed (default 42)")
@@ -42,7 +42,7 @@ random.seed(_args.seed)
 N = _args.N
 BASE = dt.datetime(2026, 6, 20, 0, 0, 0)         # UTC midnight reference
 
-# v3: FX changes per UTC day (infra/fx.py) and the foreign basket is widened with
+# v3: FX changes per UTC day (generators/fx.py) and the foreign basket is widened with
 # exotic codes (AUD/CHF/SEK/INR/BRL), so the as-of-DATE rate -- not just the day
 # bucket -- now matters. USD conversion is a pure function of (currency, UTC date);
 # the generator only stamps currency+amount, the agent must look the rate up.

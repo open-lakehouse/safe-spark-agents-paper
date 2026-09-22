@@ -20,7 +20,7 @@ Local backend: imperative (A) runs on classic local Spark, SDP (B) on a local Co
 cd experiments/safe_agent_study
 python3 -m harness.runner --backend local --only-arms A,B --max-seeds 12 \
   --local-connect-port 15040 --local-ui-port 4080 --per-cell-timeout 1800 \
-  --out results.powered.jsonl --work-dir .work.powered
+  --out results/results.powered.jsonl --work-dir .work.powered
 ```
 Notes: a **circuit breaker** aborts the run if >1 arm/bin harness-fault (e.g. a transient API blip);
 that's intended — fix the cause and backfill the missing cells (§2). Long agent-authoring loops can hit
@@ -37,7 +37,7 @@ python3 repro/backfill/merge_and_analyze.py    # merges primary + backfill (back
 ## 3. Analyze → headline
 ```bash
 SPARK_HOME=$(python3 -c 'import pyspark,os;print(os.path.dirname(pyspark.__file__))') \
-python3 analysis/analyze.py results.powered.final.jsonl --tasks TASKS.lock.json \
+python3 analysis/analyze.py results/results.powered.final.jsonl --tasks config/TASKS.lock.json \
   --assume-backend local --md-out HEADLINE.md --json-out REPORT.json
 ```
 

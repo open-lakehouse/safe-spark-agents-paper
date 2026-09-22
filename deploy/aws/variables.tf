@@ -97,7 +97,7 @@ variable "app_repo_url" {
   description = <<-EOT
     Git URL of THIS project repo. user-data clones it to obtain the server launcher +
     systemd unit authored by the separate task:
-      scripts/start-connect-server.sh, scripts/stop-connect-server.sh,
+      connect/scripts/start-connect-server.sh, connect/scripts/stop-connect-server.sh,
       deploy/connect-server/spark-connect.service
   EOT
   type        = string

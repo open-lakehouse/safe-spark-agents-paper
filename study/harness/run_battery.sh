@@ -19,20 +19,20 @@
 # error_class, wall_s, rows_affected so the study's schema can ingest it.
 #
 # Requires: pyspark 4.1 with the pipelines module, a JDK, the connector jars
-# under <repo>/jars/. No Kafka broker (dry-run reads no data; quantify reads the
+# under <repo>/connect/jars/. No Kafka broker (dry-run reads no data; quantify reads the
 # generated NDJSON).
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STUDY="$(cd "$HERE/.." && pwd)"
 # Mirrors harness/runner.py: study/ sits two levels deep in the paper repo, three in the
-# original layout. Walk up to the dir holding infra/ or .git (STUDY_REPO_ROOT overrides).
+# original layout. Walk up to the dir holding generators/ or .git (STUDY_REPO_ROOT overrides).
 REPO="${STUDY_REPO_ROOT:-}"
 if [[ -z "$REPO" ]]; then
   REPO="$STUDY"
   for _ in 1 2 3 4 5 6; do
     REPO="$(dirname "$REPO")"
-    if [[ -d "$REPO/infra" || -d "$REPO/.git" ]]; then break; fi
+    if [[ -d "$REPO/generators" || -d "$REPO/.git" ]]; then break; fi
   done
 fi
 BATTERY="$REPO/defect_battery"                      # recovered E3 variants + quantify.py live here
@@ -81,7 +81,7 @@ JAR_NAMES=(
   "kafka-clients-3.9.0.jar"
   "commons-pool2-2.12.0.jar"
 )
-jar_csv() { local IFS=,; echo "${JAR_NAMES[*]/#/$REPO/jars/}"; }
+jar_csv() { local IFS=,; echo "${JAR_NAMES[*]/#/$REPO/connect/jars/}"; }
 KJARS="$(jar_csv)"
 
 # defect registry: id | dir | class | quantify-key (or -)
@@ -166,7 +166,7 @@ gen_dataset_for_seed() {
   local seed="$1" out="$WORK/orders_seed${seed}.ndjson"
   if [ ! -s "$out" ]; then
     log "generating dataset seed=$seed N=$NROWS"
-    "$PYBIN" "$REPO/infra/gen_messy_orders.py" --seed "$seed" --N "$NROWS" \
+    "$PYBIN" "$REPO/generators/gen_messy_orders.py" --seed "$seed" --N "$NROWS" \
       > "$out" 2> "$WORK/data-profile-seed${seed}.txt"
   fi
   echo "$out"

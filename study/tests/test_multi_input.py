@@ -35,7 +35,7 @@ from harness.backends.local import LocalSparkExecutor  # noqa: E402
 from harness.prompt_guard import leaks as _leaks       # noqa: E402
 
 ARMS = load_arms(os.path.join(STUDY, "arms"))
-TASKS = json.load(open(os.path.join(STUDY, "TASKS.lock.json")))
+TASKS = json.load(open(os.path.join(STUDY, "config", "TASKS.lock.json")))
 TASKS_BY_ID = {t["id"]: t for t in TASKS["tasks"]}
 # tasks that declare at least one .py aux generator
 AUX_TASKS = [t for t in TASKS["tasks"]
@@ -61,8 +61,8 @@ def test_corpus_declares_multi_input_tasks():
 
 
 def test_aux_input_name_strips_gen_prefix():
-    assert runner.aux_input_name("infra/gen_fx_rates_cdc.py") == "fx_rates_cdc"
-    assert runner.aux_input_name("infra/gen_customers_cdc.py") == "customers_cdc"
+    assert runner.aux_input_name("generators/gen_fx_rates_cdc.py") == "fx_rates_cdc"
+    assert runner.aux_input_name("generators/gen_customers_cdc.py") == "customers_cdc"
 
 
 # ---------------------------------------------------------------------------

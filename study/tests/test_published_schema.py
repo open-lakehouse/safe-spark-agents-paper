@@ -35,7 +35,7 @@ from test_stage_compute import (  # noqa: E402
     EXPECT_CPU_S, EXPECT_EXEC_S, REST, SDP_TASK, _FakeRest, _StubConnect, _patched,
 )
 
-PUBLISHED = os.path.join(STUDY, "results_schema.json")
+PUBLISHED = os.path.join(STUDY, "config", "results_schema.json")
 
 
 def _published_schema():

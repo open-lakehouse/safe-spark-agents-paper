@@ -11,7 +11,7 @@ Known-good (locked) numbers -- corpus v3 (daily FX + wider basket + tombstones):
 The CDC generator's documented oracle is preserved (total_events=263,
 distinct=100, deleted=13 at seed=7) -- v3 only nulls the delete payloads; the
 payments numbers move because v3 widens the foreign basket (exotic codes) and
-spreads the stream over ~4 UTC days with a per-day FX rate (infra/fx.py).
+spreads the stream over ~4 UTC days with a per-day FX rate (generators/fx.py).
 
 Run directly (`python tests/test_oracles_ext.py`) or under pytest.
 """
@@ -26,14 +26,14 @@ STUDY = os.path.dirname(HERE)
 
 def _find_repo_root():
     # Mirrors harness/runner.py: study/ sits two levels deep in the paper repo,
-    # three in the original layout. Walk up to the dir holding infra/ or .git.
+    # three in the original layout. Walk up to the dir holding generators/ or .git.
     env = os.environ.get("STUDY_REPO_ROOT")
     if env:
         return os.path.abspath(env)
     d = HERE
     for _ in range(6):
         d = os.path.dirname(d)
-        if os.path.isdir(os.path.join(d, "infra")) or os.path.isdir(os.path.join(d, ".git")):
+        if os.path.isdir(os.path.join(d, "generators")) or os.path.isdir(os.path.join(d, ".git")):
             return d
     return os.path.normpath(os.path.join(STUDY, "..", ".."))
 
@@ -76,7 +76,7 @@ def _spark():
 
 def test_cdc_generator_oracle_preserved():
     with tempfile.TemporaryDirectory() as td:
-        out = _gen("infra/gen_customers_cdc.py", [], os.path.join(td, "cdc.ndjson"))
+        out = _gen("generators/gen_customers_cdc.py", [], os.path.join(td, "cdc.ndjson"))
         n = sum(1 for _ in open(out))
         assert n == CDC_TOTAL_EVENTS, f"CDC seed=7 events {n} != {CDC_TOTAL_EVENTS}"
         prof = open(out + ".profile").read()
@@ -90,7 +90,7 @@ def test_cdc_d6_reproduced():
         print("SKIP test_cdc_d6_reproduced: pyspark not importable")
         return
     with tempfile.TemporaryDirectory() as td:
-        ds = _gen("infra/gen_customers_cdc.py", [], os.path.join(td, "cdc.ndjson"))
+        ds = _gen("generators/gen_customers_cdc.py", [], os.path.join(td, "cdc.ndjson"))
         spark = _spark()
         try:
             affected, detail = qext.q_cdc_d6(spark, ds)
@@ -108,7 +108,7 @@ def test_payments_quantifiers_reproduced():
         print("SKIP test_payments_quantifiers_reproduced: pyspark not importable")
         return
     with tempfile.TemporaryDirectory() as td:
-        ds = _gen("infra/gen_payments.py", [], os.path.join(td, "pay.ndjson"))
+        ds = _gen("generators/gen_payments.py", [], os.path.join(td, "pay.ndjson"))
         spark = _spark()
         try:
             d7, _ = qext.q_pay_d7(spark, ds)

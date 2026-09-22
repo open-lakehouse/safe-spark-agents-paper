@@ -116,15 +116,15 @@ EOF
 
 # --- 3. Install the launcher + systemd unit from the app repo ---------------
 # Authored by the SEPARATE task at:
-#   scripts/start-connect-server.sh, scripts/stop-connect-server.sh
+#   connect/scripts/start-connect-server.sh, connect/scripts/stop-connect-server.sh
 #   deploy/connect-server/spark-connect.service
 APP_DIR=/opt/spark-connect
 rm -rf "$APP_DIR/src"
 git clone --depth 1 --branch "$APP_REPO_REF" "$APP_REPO_URL" "$APP_DIR/src"
 
 install -d "$APP_DIR/bin"
-install -m 0755 "$APP_DIR/src/scripts/start-connect-server.sh" "$APP_DIR/bin/start-connect-server.sh"
-install -m 0755 "$APP_DIR/src/scripts/stop-connect-server.sh"  "$APP_DIR/bin/stop-connect-server.sh"
+install -m 0755 "$APP_DIR/src/connect/scripts/start-connect-server.sh" "$APP_DIR/bin/start-connect-server.sh"
+install -m 0755 "$APP_DIR/src/connect/scripts/stop-connect-server.sh"  "$APP_DIR/bin/stop-connect-server.sh"
 install -m 0644 "$APP_DIR/src/deploy/connect-server/spark-connect.service" /etc/systemd/system/spark-connect.service
 
 # Environment the unit/launcher can source (paths + port the IaC owns).

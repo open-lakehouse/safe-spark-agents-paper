@@ -1,9 +1,9 @@
 name: D5_immutable_config
 catalog: spark_catalog
 database: default
-storage: file://__REPO__/experiments/defect_battery/variants/D5_immutable_config/pipeline-storage
+storage: file://__REPO__/defect_battery/variants/D5_immutable_config/pipeline-storage
 libraries:
   - glob:
       include: transformations/**
 configuration:
-  spark.jars: "__REPO__/jars/spark-sql-kafka-0-10_2.13-4.1.0.jar,__REPO__/jars/spark-token-provider-kafka-0-10_2.13-4.1.0.jar,__REPO__/jars/kafka-clients-3.9.0.jar,__REPO__/jars/commons-pool2-2.12.0.jar"
+  spark.jars: "__REPO__/connect/jars/spark-sql-kafka-0-10_2.13-4.1.0.jar,__REPO__/connect/jars/spark-token-provider-kafka-0-10_2.13-4.1.0.jar,__REPO__/connect/jars/kafka-clients-3.9.0.jar,__REPO__/connect/jars/commons-pool2-2.12.0.jar"

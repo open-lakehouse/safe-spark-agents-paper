@@ -16,7 +16,7 @@ multiseed, the D3 race-fix, and the A/B/B2 pilot; 316 rows total, see `MANIFEST.
 evidence trail behind the pre-registration and deviation record (`../PREREGISTRATION.md`, `../DEVIATIONS.md`).
 
 The paper's **headline numbers come from the powered run**, not these sweeps: see
-`../results/`, `../POWERED_REPORT.final.json`, and `../POWERED_HEADLINE.final.md`. These raw sweeps
+`../results/`, `../reporting/POWERED_REPORT.final.json`, and `../reporting/POWERED_HEADLINE.final.md`. These raw sweeps
 are kept for provenance, auditability, and reanalysis, not as the reported result.
 
 ## Provenance and authenticity

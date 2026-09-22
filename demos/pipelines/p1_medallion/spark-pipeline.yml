@@ -1,7 +1,7 @@
 name: p1_medallion
 catalog: spark_catalog
 database: p1_medallion
-storage: file://__REPO__/pipelines/p1_medallion/pipeline-storage
+storage: file://__REPO__/demos/pipelines/p1_medallion/pipeline-storage
 libraries:
   - glob:
       include: transformations/**

@@ -98,7 +98,7 @@ try:  # pragma: no cover - exercised both ways across environments
     from harness.harness_faults import task_complexity_bin as _task_complexity_bin
     HARNESS_FAULT_EXIT_CLASSES = frozenset(_HF)
     _DEFAULT_TASKS_LOCK = _os.path.join(
-        _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "TASKS.lock.json")
+        _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "config", "TASKS.lock.json")
 except Exception:  # noqa: BLE001
     HARNESS_FAULT_EXIT_CLASSES = frozenset({
         "PROPOSE_TIMEOUT", "PROPOSE_API_ERROR", "PROPOSE_RATE_LIMIT",

@@ -28,7 +28,7 @@ _spec = importlib.util.spec_from_file_location(
 analyze = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(analyze)
 
-PUBLISHED = os.path.join(STUDY, "results_schema.json")
+PUBLISHED = os.path.join(STUDY, "config", "results_schema.json")
 
 # --- the two KNOWN samples (line-numbered in the comments for the LOC hand-check) ---
 # Declarative (SDP) — the @dp wrapper + def are mandatory scaffolding the agent MUST

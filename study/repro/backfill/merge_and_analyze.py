@@ -8,10 +8,10 @@ STUDY = os.path.normpath(os.path.join(HERE, "..", ".."))
 os.chdir(STUDY)
 
 # primary run parts first, backfill files LAST (they win per (task,arm,seed))
-PRIMARY = sorted(glob.glob("results.powered*.part*.jsonl")) or sorted(glob.glob("results.powered*.jsonl"))
-BACKFILL = sorted(glob.glob("results.bf_*.jsonl"))
+PRIMARY = sorted(glob.glob("results/results.powered*.part*.jsonl")) or sorted(glob.glob("results/results.powered*.jsonl"))
+BACKFILL = sorted(glob.glob("results/results.bf_*.jsonl"))
 FILES = [f for f in PRIMARY if ".final." not in f] + BACKFILL
-MERGED = "results.powered.final.jsonl"
+MERGED = "results/results.powered.final.jsonl"
 
 def key(r): return ((r.get("task") or r.get("task_id")), r.get("arm"), r.get("seed"))
 rows = {}
@@ -32,7 +32,7 @@ print(f"[merge] remaining error cells ({len(errs)}): {errs}")
 env = dict(os.environ)
 import pyspark
 env["SPARK_HOME"] = os.path.dirname(pyspark.__file__)
-subprocess.run(["python3", "analysis/analyze.py", MERGED, "--tasks", "TASKS.lock.json",
+subprocess.run(["python3", "analysis/analyze.py", MERGED, "--tasks", "config/TASKS.lock.json",
                 "--assume-backend", "local", "--md-out", "HEADLINE.final.md",
                 "--json-out", "REPORT.final.json"], env=env)
 print("[merge] -> HEADLINE.final.md + REPORT.final.json")

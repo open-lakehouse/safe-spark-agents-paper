@@ -36,14 +36,14 @@ STUDY = os.path.dirname(HERE)
 
 def _find_repo_root():
     # Mirrors harness/runner.py: study/ sits two levels deep in the paper repo,
-    # three in the original layout. Walk up to the dir holding infra/ or .git.
+    # three in the original layout. Walk up to the dir holding generators/ or .git.
     env = os.environ.get("STUDY_REPO_ROOT")
     if env:
         return os.path.abspath(env)
     d = HERE
     for _ in range(6):
         d = os.path.dirname(d)
-        if os.path.isdir(os.path.join(d, "infra")) or os.path.isdir(os.path.join(d, ".git")):
+        if os.path.isdir(os.path.join(d, "generators")) or os.path.isdir(os.path.join(d, ".git")):
             return d
     return os.path.normpath(os.path.join(STUDY, "..", ".."))
 
@@ -128,8 +128,8 @@ def _hc1_positions(spark, trades_path, rates):
 
 
 def pilot_hc1(spark, seed, td):
-    tr = gen("infra/gen_trades.py", ["--seed", str(seed)], os.path.join(td, f"tr{seed}.ndjson"))
-    fxf = gen("infra/gen_fx_rates_cdc.py", ["--seed", str(seed)], os.path.join(td, f"fx{seed}.ndjson"))
+    tr = gen("generators/gen_trades.py", ["--seed", str(seed)], os.path.join(td, f"tr{seed}.ndjson"))
+    fxf = gen("generators/gen_fx_rates_cdc.py", ["--seed", str(seed)], os.path.join(td, f"fx{seed}.ndjson"))
     truth = HC.hc1_truth_positions(spark, tr)
     correct = _hc1_positions(spark, tr, _fx_feed_rates(spark, fxf, "latest"))
     defective = _hc1_positions(spark, tr, _fx_feed_rates(spark, fxf, "lowest"))
@@ -143,7 +143,7 @@ def pilot_hc1(spark, seed, td):
 # HC-2: clickstream -> sessions/funnel + DLQ accounting
 # ---------------------------------------------------------------------------
 def pilot_hc2(spark, seed, td):
-    ck = gen("infra/gen_clickstream.py", ["--seed", str(seed)], os.path.join(td, f"ck{seed}.ndjson"))
+    ck = gen("generators/gen_clickstream.py", ["--seed", str(seed)], os.path.join(td, f"ck{seed}.ndjson"))
     truth = HC.hc2_truth(spark, ck)
     # CORRECT: clean + DLQ accounted, every event kept.
     ok_c, _ = HC.hc2_event_accounting(truth["n_clean"], truth["n_malformed"], truth["n_source_lines"])
@@ -176,7 +176,7 @@ def _cdc_current(spark, cdc_path, apply_tombstones):
 
 
 def pilot_p13(spark, seed, td):
-    cdc = gen("infra/gen_customers_cdc.py", ["--seed", str(seed)], os.path.join(td, f"cdc{seed}.ndjson"))
+    cdc = gen("generators/gen_customers_cdc.py", ["--seed", str(seed)], os.path.join(td, f"cdc{seed}.ndjson"))
     truth, _ = HC.cdc_truth_current(spark, cdc)
     correct = _cdc_current(spark, cdc, apply_tombstones=True)
     defective = _cdc_current(spark, cdc, apply_tombstones=False)   # keeps tombstoned customers
@@ -225,7 +225,7 @@ def _daily_reconciles(cand, truth, tol=1.0):
 
 
 def pilot_p14(spark, seed, td):
-    pay = gen("infra/gen_payments.py", ["--seed", str(seed)], os.path.join(td, f"pay{seed}.ndjson"))
+    pay = gen("generators/gen_payments.py", ["--seed", str(seed)], os.path.join(td, f"pay{seed}.ndjson"))
     truth = HC.payments_truth_daily_usd(spark, pay)
     correct = _pay_daily(spark, pay, flat=False)
     defective = _pay_daily(spark, pay, flat=True)   # ignores daily FX drift -> wrong totals

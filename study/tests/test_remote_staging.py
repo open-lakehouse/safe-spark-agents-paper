@@ -105,7 +105,7 @@ def _cfg():
 
 
 # task specs covering an imperative arm-input AND an SDP-storage path
-ORDERS_TASK = {"id": "orders_silver_gold", "input": "infra/gen_messy_orders.py",
+ORDERS_TASK = {"id": "orders_silver_gold", "input": "generators/gen_messy_orders.py",
                "defects_in_scope": ["D8"],
                "output_contract": {"table": "gold_daily", "revenue_col": "revenue",
                                    "substrate": "orders"}}

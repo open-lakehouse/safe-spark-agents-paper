@@ -1,7 +1,7 @@
 name: p3_windows
 catalog: spark_catalog
 database: p3_windows
-storage: file://__REPO__/pipelines/p3_windows/pipeline-storage
+storage: file://__REPO__/demos/pipelines/p3_windows/pipeline-storage
 libraries:
   - glob:
       include: transformations/**

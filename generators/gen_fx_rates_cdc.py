@@ -11,7 +11,7 @@ Schema (one Kafka `value` per line):
   currency, rate (USD per 1 unit), effective_date (YYYY-MM-DD),
   effective_time (ISO, UTC midnight of effective_date), op ('U'), seq
 
-The "correct" rate for (currency, date) is infra/fx.fx_usd(currency, date); the
+The "correct" rate for (currency, date) is generators/fx.fx_usd(currency, date); the
 revisions deliberately emit a wrong value FIRST so a survivor chosen without
 ORDER BY seq is wrong. Used by: new_stream_stream_join, new_scd2_as_of_join,
 HC-1 fx_trade_ledger. Deterministic per --seed.

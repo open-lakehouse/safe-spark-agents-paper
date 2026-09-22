@@ -46,10 +46,11 @@ from harness import harness_faults as hf  # noqa: E402  -- retry/quarantine/brea
 
 HARNESS_VERSION = "1.0.0"
 def _find_repo_root():
-    # The data generators (infra/) and .git live at the repo root. The original layout
+    # The data generators (generators/) and .git live at the repo root. The original layout
     # put harness/ three levels deep; when the study dir is relocated (e.g. into the paper
     # repo, two levels deep) a fixed ../../.. points above the repo. Walk up to the dir
-    # that actually holds infra/ or .git so input-gen paths and provenance resolve either way.
+    # that actually holds generators/ (or the pre-reorganization infra/) or .git so input-gen
+    # paths and provenance resolve either way.
     env = os.environ.get("STUDY_REPO_ROOT")
     if env:
         return os.path.abspath(env)
@@ -57,7 +58,9 @@ def _find_repo_root():
     d = here
     for _ in range(6):
         d = os.path.dirname(d)
-        if os.path.isdir(os.path.join(d, "infra")) or os.path.isdir(os.path.join(d, ".git")):
+        if (os.path.isdir(os.path.join(d, "generators"))
+                or os.path.isdir(os.path.join(d, "infra"))
+                or os.path.isdir(os.path.join(d, ".git"))):
             return d
     return os.path.normpath(os.path.join(here, "..", ".."))
 REPO_ROOT = _find_repo_root()
@@ -85,7 +88,7 @@ class StudyConfig:
     spark_remote: str = "sc://localhost:15002"
     spark_rest_url: Optional[str] = None
     image_digest: str = "uncontainerized"
-    generator: str = "infra/gen_messy_orders.py"
+    generator: str = "generators/gen_messy_orders.py"
     # Cluster-reachable storage base (e.g. s3a://.../warehouse). When set, the live
     # ConnectExecutor stages each seed's input here over the Connect channel and SDP
     # specs store here, so the REMOTE k8s executors can read input + write output.
@@ -110,7 +113,7 @@ class StudyConfig:
             spark_remote=d.get("spark_remote", "sc://localhost:15002"),
             spark_rest_url=d.get("spark_rest_url"),
             image_digest=d.get("image_digest", "uncontainerized"),
-            generator=d.get("generator", "infra/gen_messy_orders.py"),
+            generator=d.get("generator", "generators/gen_messy_orders.py"),
             warehouse_uri=d.get("warehouse_uri"),
             sdp_catalog=d.get("sdp_catalog", "spark_catalog"),
             sdp_database=d.get("sdp_database", "default"),
@@ -635,6 +638,11 @@ def _generate_one(inp: str, extra_args: List[str], seed: int,
     arm gets byte-identical data."""
     if not inp.endswith(".py"):
         return None  # cross-pipeline / upstream-table input; no generator
+    if inp.startswith("infra/"):
+        # TASKS.lock.json and the seed subsets are frozen byte-for-byte with the
+        # pre-reorganization layout (generators lived under infra/). Map the legacy
+        # prefix instead of editing the frozen corpus.
+        inp = "generators/" + inp[len("infra/"):]
     gen = os.path.join(REPO_ROOT, inp)
     if not os.path.exists(gen):
         raise FileNotFoundError(f"task {owner!r} input generator not found: {gen}")
@@ -1333,10 +1341,10 @@ def main(argv=None):
     here = os.path.dirname(os.path.abspath(__file__))
     study = os.path.dirname(here)
     ap = argparse.ArgumentParser(description="Multi-arm safe-agent study runner.")
-    ap.add_argument("--config", default=os.path.join(study, "study.config.json"))
+    ap.add_argument("--config", default=os.path.join(study, "config", "study.config.json"))
     ap.add_argument("--arms-dir", default=os.path.join(study, "arms"))
-    ap.add_argument("--tasks", default=os.path.join(study, "TASKS.lock.json"))
-    ap.add_argument("--seeds", default=os.path.join(study, "SEEDS.lock.json"))
+    ap.add_argument("--tasks", default=os.path.join(study, "config", "TASKS.lock.json"))
+    ap.add_argument("--seeds", default=os.path.join(study, "config", "SEEDS.lock.json"))
     ap.add_argument("--backend", choices=["replay", "live", "local"], default="replay")
     ap.add_argument("--replay-trace", default=None, help="episode trace JSON (replay backend)")
     # Part-1 LOCAL substrate (DEVIATIONS D-7): imperative arms on classic local[*]
@@ -1347,7 +1355,7 @@ def main(argv=None):
     ap.add_argument("--local-ui-port", type=int, default=4040,
                     help="driver UI port for the local Connect server's H2 stage-diff "
                          "(--backend local); the imperative LocalSparkExecutor uses +1")
-    ap.add_argument("--out", default=os.path.join(study, "results.jsonl"))
+    ap.add_argument("--out", default=os.path.join(study, "results", "results.jsonl"))
     ap.add_argument("--work-dir", default=os.path.join(study, ".work"))
     ap.add_argument("--only-tasks", default=None, help="comma-separated task ids to restrict to")
     ap.add_argument("--only-arms", default=None, help="comma-separated arm ids to restrict to")

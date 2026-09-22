@@ -1,19 +1,19 @@
 # Spark Connect server — durable, systemd-managed service
 
-This promotes the Spark Connect launch out of `scripts/bench_clean.sh` (where it was a
+This promotes the Spark Connect launch out of an earlier benchmark helper (where it was a
 fire-and-forget one-liner) into a first-class service with a parameterized launcher, a stop
 script, hardened server-side defaults, and a systemd unit.
 
 OSS Apache Spark 4.1.1 + JDK 17. The server class is
 `org.apache.spark.sql.connect.service.SparkConnectServer`, shipped inside the Spark/PySpark
-distribution; the repo's `jars/` (Kafka connectors) are added via `--jars`.
+distribution; the repo's `connect/jars/` (Kafka connectors) are added via `--jars`.
 
 ## Files
 
 | File | Purpose |
 |---|---|
-| `../../scripts/start-connect-server.sh` | parameterized launcher; fork or `--foreground` |
-| `../../scripts/stop-connect-server.sh`  | graceful stop (PID file → port → pgrep) |
+| `../../connect/scripts/start-connect-server.sh` | parameterized launcher; fork or `--foreground` |
+| `../../connect/scripts/stop-connect-server.sh`  | graceful stop (PID file → port → pgrep) |
 | `conf/spark-defaults.conf`              | durable server-side defaults + hardening |
 | `spark-connect.service`                 | systemd unit (supervises the JVM directly) |
 
@@ -23,14 +23,14 @@ From a checkout, with a JDK 17 on `JAVA_HOME` and `pyspark` importable (or `SPAR
 
 ```bash
 # Foreground or fork? Default forks, waits for the port, prints the URL, returns.
-scripts/start-connect-server.sh \
+connect/scripts/start-connect-server.sh \
   --port 15002 \
   --warehouse-dir "$PWD/_warehouse" \
   --driver-memory 4g
 
 # ... it prints:  Spark Connect server ready at sc://127.0.0.1:15002 (pid NNNN)
 
-scripts/stop-connect-server.sh
+connect/scripts/stop-connect-server.sh
 ```
 
 `SPARK_HOME` is auto-derived from the installed `pyspark` if unset. Everything has a flag and a
@@ -44,7 +44,7 @@ The unit is **not** installed by anything in this directory — `deploy/aws/` us
 instance boot. The expected layout the unit assumes:
 
 ```text
-/opt/safe-spark-agents/        # the repo checkout (scripts/, deploy/, jars/)
+/opt/safe-spark-agents/        # the repo checkout (connect/, deploy/)
 /opt/spark/                    # the Spark distribution         -> SPARK_HOME
 /srv/spark/                    # owned by the spark user
   warehouse/                   # spark.sql.warehouse.dir
@@ -111,7 +111,7 @@ fallbacks; each is also a launcher flag that overrides the env per-launch:
 | `SPARK_CONNECT_PORT` | `--port` | `15002` | gRPC binding port |
 | `SPARK_CONNECT_WAREHOUSE_DIR` | `--warehouse-dir` | `/srv/spark/warehouse` | warehouse |
 | `SPARK_CONNECT_DRIVER_MEMORY` | `--driver-memory` | `20g` | driver heap (r7i.xlarge) |
-| `SPARK_CONNECT_JARS` | `--jars` | glob `<repo>/jars/*.jar` | extra jars |
+| `SPARK_CONNECT_JARS` | `--jars` | glob `<repo>/connect/jars/*.jar` | extra jars |
 | `SPARK_CONNECT_PID_FILE` | `--pid-file` | `/srv/spark/run/spark-connect.pid` | PID file (both modes) |
 | `SPARK_CONNECT_LOG_FILE` | `--log-file` | `/srv/spark/logs/spark-connect.log` | log (fork mode; foreground → journal) |
 | `SPARK_CONNECT_HOST` | `--host` | `127.0.0.1` | host in the printed URL |
@@ -133,7 +133,7 @@ To enable a shared secret:
 
 ```bash
 # Dev (CLI): the launcher passes it via --conf.
-SPARK_CONNECT_AUTHENTICATE_TOKEN="$(openssl rand -hex 32)" scripts/start-connect-server.sh
+SPARK_CONNECT_AUTHENTICATE_TOKEN="$(openssl rand -hex 32)" connect/scripts/start-connect-server.sh
 ```
 
 ```bash
@@ -156,7 +156,7 @@ The launcher resolves `SPARK_HOME` and the server class lazily, so static checks
 live cluster:
 
 ```bash
-shellcheck scripts/start-connect-server.sh scripts/stop-connect-server.sh
-bash -n scripts/start-connect-server.sh scripts/stop-connect-server.sh
+shellcheck connect/scripts/start-connect-server.sh connect/scripts/stop-connect-server.sh
+bash -n connect/scripts/start-connect-server.sh connect/scripts/stop-connect-server.sh
 systemd-analyze verify deploy/connect-server/spark-connect.service
 ```

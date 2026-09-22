@@ -9,7 +9,7 @@ spark = SparkSession.active()
 
 KAFKA_BOOTSTRAP = "localhost:9092"
 ORDERS_TOPIC = "orders"
-MERCHANTS_PATH = "file://__REPO__/infra/merchants.ndjson"
+MERCHANTS_PATH = "file://__REPO__/generators/merchants.ndjson"
 
 # All-STRING schema; coerce afterwards so epoch-ms / tz / string-amount values are not
 # silently nulled by from_json's strict type parsing.

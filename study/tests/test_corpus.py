@@ -24,14 +24,14 @@ STUDY = os.path.dirname(HERE)
 
 def _find_repo_root():
     # Mirrors harness/runner.py: the original layout put study/ three levels deep;
-    # the paper repo puts it two deep. Walk up to the dir holding infra/ or .git.
+    # the paper repo puts it two deep. Walk up to the dir holding generators/ or .git.
     env = os.environ.get("STUDY_REPO_ROOT")
     if env:
         return os.path.abspath(env)
     d = HERE
     for _ in range(6):
         d = os.path.dirname(d)
-        if os.path.isdir(os.path.join(d, "infra")) or os.path.isdir(os.path.join(d, ".git")):
+        if os.path.isdir(os.path.join(d, "generators")) or os.path.isdir(os.path.join(d, ".git")):
             return d
     return os.path.normpath(os.path.join(STUDY, "..", ".."))
 
@@ -39,8 +39,8 @@ def _find_repo_root():
 REPO = _find_repo_root()
 sys.path.insert(0, STUDY)
 
-TASKS = json.load(open(os.path.join(STUDY, "TASKS.lock.json")))
-SEEDS = json.load(open(os.path.join(STUDY, "SEEDS.lock.json")))
+TASKS = json.load(open(os.path.join(STUDY, "config", "TASKS.lock.json")))
+SEEDS = json.load(open(os.path.join(STUDY, "config", "SEEDS.lock.json")))
 SEMANTIC = {"D2", "D6", "D7", "D8"}
 ALL_CLASSES = {f"D{i}" for i in range(1, 10)}
 

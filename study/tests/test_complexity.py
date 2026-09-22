@@ -16,7 +16,7 @@ sys.path.insert(0, STUDY)
 
 from harness import complexity as cx  # noqa: E402
 
-TASKS = json.load(open(os.path.join(STUDY, "TASKS.lock.json")))
+TASKS = json.load(open(os.path.join(STUDY, "config", "TASKS.lock.json")))
 
 
 def test_rubric_weights_and_bins_are_stable():
