@@ -9,7 +9,49 @@ No external assets (fonts/JS/CSS): safe for Artifact CSP and offline use.
 """
 import re, subprocess, html, sys
 from pathlib import Path
-import markdown
+try:
+    import markdown
+except ModuleNotFoundError:  # offline fallback: markdown-it-py where python-markdown is unavailable
+    class _MarkdownItShim:
+        """python-markdown-compatible facade over CommonMark (heading ids added for the toc)."""
+
+        def __init__(self, extensions=None, extension_configs=None):
+            from markdown_it import MarkdownIt
+
+            self._md = MarkdownIt("commonmark")
+            for ext in extensions or []:
+                if ext == "tables":
+                    self._md.enable("table")
+            self._used = set()
+
+        @staticmethod
+        def _slug(text):
+            import unicodedata
+
+            slug = re.sub(r"<[^>]+>", "", text).strip().lower()
+            slug = unicodedata.normalize("NFKD", slug).encode("ascii", "ignore").decode()
+            slug = re.sub(r"[^\w\s-]", "", slug).strip()
+            slug = re.sub(r"[\s_]+", "-", slug)
+            return slug or "section"
+
+        def convert(self, text):
+            body = self._md.render(text)
+
+            def heading_ids(match):
+                tag, inner = match.group(1), match.group(2)
+                base, counter = self._slug(inner), 1
+                slug = base
+                while slug in self._used:
+                    counter += 1
+                    slug = f"{base}_{counter}"
+                self._used.add(slug)
+                return f'<h{tag} id="{slug}">{inner}</h{tag}>'
+
+            return re.sub(r"<h([1-6])>(.*?)</h\1>", heading_ids, body, flags=re.S)
+
+    from types import SimpleNamespace
+
+    markdown = SimpleNamespace(Markdown=_MarkdownItShim)
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "PAPER.md"
@@ -385,7 +427,7 @@ DOC = f"""{CSS}
     measures the risk, draws the boundary that makes an agent safe to run untrusted, and builds an open
     platform that enforces it, with per-tenant isolation demonstrated end to end on a live cluster.</p>
   <div class="metarow">
-    <span class="k">Updated 2026-07-10</span><span>·</span>
+    <span class="k">Updated 2026-09</span><span>·</span>
     <span class="k">git {git_short()}</span><span>·</span>
     <span>4 sections + 2 reference appendices</span>
     <span class="legend">
