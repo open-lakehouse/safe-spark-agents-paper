@@ -1,5 +1,5 @@
 <svg width="100%" viewBox="0 0 680 300" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
-<title>Section 4.2: where structural defects are caught, SDP's gate vs bare imperative</title>
+<title>§1.4.2: where structural defects are caught, SDP's gate vs bare imperative</title>
 <desc>Structural defects (D1, D4, D5) reach a boundary marked "before any data is processed." Bare imperative has no structural gate, so zero are caught before data; four surface later at runtime, after executors have run and compute is spent. SDP runs a framework dry-run at that boundary and catches 79 defects before any data is processed; thirty more surface at runtime, and neither arm ships a structural defect.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}

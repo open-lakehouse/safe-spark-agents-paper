@@ -4,7 +4,7 @@
 >
 > **The answer, short.** **(1)** A controlled 528-run study: the same agent wrote pipelines two ways. Declarative (SDP), it had a structural dry-run that caught **79** defects before data moved, vs **0** for bare imperative — and because broken pipelines get rejected before executors start, imperative burned ~**34×** the cluster compute (~**1000×** on failed runs). **(2)** A dev loop built around what the agent can and can't touch: propose, gate, reconcile. The agent only ever emits an inert plan. It never holds a session, credentials, or data. **(3)** The platform that makes this real for many tenants: Spark Connect, Kubernetes, and a governed catalog, with all five per-tenant isolation layers live on EKS. Tenant A can't reach tenant B. **(4)** Omnigent, the fleet layer: one custodian holds every credential so no agent ever sees one. Demonstrated: one brief, one autonomous agent, three isolated tenants, governed medallion pipelines on the live platform. The quantitative fleet study is a separate paper.
 >
-> Each section carries its own maturity label. §1 and §3 hold the measured evidence. §4's core is demonstrated, and its numbers are deferred.
+> Each section carries a maturity label. §1 and §3 are the measured evidence; §2 and §4's core are demonstrated; §4's numbers are deferred.
 
 # SECTION 1: Imperative vs SDP
 ### A Safety-and-Cost Study of AI Agents Writing Spark Pipelines
@@ -19,7 +19,7 @@ Pipelines populate warehouses. They feed dashboards, reports, and numbers somebo
 
 Whether the agent writes them depends on more than the model. It depends on the paradigm it's asked to write in. With imperative PySpark the agent owns a live `SparkSession` and executes transformations directly. With SDP the agent declares the pipeline as desired state, a set of materialized views, and the framework assembles the graph and dry-runs it before data moves. The hypothesis: because SDP inspects the whole graph up front, it should catch a class of defects (unresolved columns, broken dependencies) that imperative only discovers at runtime, or never.
 
-So we ran it, and this section reports: **79** structural defects caught at the gate vs **0**; a silent-defect gap that resolves to skill rather than paradigm; half the code at 2.3× the tokens; and ~34× more cluster compute burned by imperative. Root causes, operational definitions, and the pre-registered protocol live in [SUPPLEMENT-Section1.md](https://github.com/open-lakehouse/safe-spark-agents-paper/blob/main/paper/SUPPLEMENT-Section1.md) as §SM1–§SM7.
+Root causes, operational definitions, and the pre-registered protocol live in [SUPPLEMENT-Section1.md](https://github.com/open-lakehouse/safe-spark-agents-paper/blob/main/paper/SUPPLEMENT-Section1.md) as §SM1–§SM7.
 
 ## Reader's map
 
@@ -289,7 +289,7 @@ This ran for real: a live agent (`claude-opus-4-8`) over §1's full corpus, and 
 
 From the infrastructure engineer's seat, §3 is a separation of concerns: each layer owns exactly one thing and delegates the rest (§3.0). **§3.1** is the GitOps/CI boundary that tests and reconciles every change; **§3.2** is Connect-on-Kubernetes, the governed ingress and the elastic execution behind it; **§3.3 is the section's core**, the five-layer isolation stack, walked link by link; **§3.4** states where each pillar stands; **§3.5** hands credential custody at fleet scale to §4/Omnigent.
 
-Because §2's agent only ever emits inert desired state, it can be dropped into a governed platform that trusts it with nothing: **SDP** for declarative authoring, a **GitOps/CI** layer that tests and reconciles every change, **Spark Connect** as the single identity-pinned front door, and **Kubernetes** for elastic execution. Tenant A is routed to *its own* Connect server, handed a credential it never holds, run on *its own* executor pods, authorized at the catalog only for itself, and prefix-scoped at storage — no path to tenant B. The five links were re-verified fresh on 2026-07-14 (`paper/notes/proof_2026-07-14_live_isolation.log`); §3.4 maps where each pillar stands, and its Frontier row states what's still ahead.
+Because §2's agent only emits inert desired state, §3's platform can trust it with nothing: **SDP** for authoring, a **GitOps/CI** layer for integration, **Spark Connect** as the identity-pinned door, **Kubernetes** for execution, and a governed **catalog** for authorization and credential vending. The isolation was re-verified on 2026-07-14 (`paper/notes/proof_2026-07-14_live_isolation.log`); §3.4 maps what runs versus what's still ahead.
 
 [[[SVG-SECTION3]]]
 
@@ -311,7 +311,7 @@ The naive setup lets an agent submit code straight to a cluster: a live session 
 
 Honest scoping: the full author→PR→gate→reconcile loop runs locally against runner-local Connect; the production-EKS GitOps path is documented but not wired (`study/gitops_demo/PRODUCTION_EKS.md`). No public run of a real agent-opened PR is captured. The authoring→runtime bridge — the CI controller presenting a per-tenant client cert (SAN `spiffe://safe-spark-agents/tenant_a`) to the gateway — is design-only, named here rather than left implicit. And the gate is structural: data-quality/expectation tests, the obvious extension, aren't built.
 
-## 3.2 Connect on Kubernetes: Connect is the front door, k8s is the horsepower
+## 3.2 Connect on Kubernetes: governed ingress, elastic execution
 
 Spark Connect is Spark's session-less front end: a client sends a query plan to a shared server, never code to execute. The driver plans and coordinates; executor pods do the work. Scale happens behind the governed door, never around it.
 
@@ -337,7 +337,7 @@ The tenancy model, decided before any mechanism:
 
 Chosen C because of a §2 property. The risk of a shared executor depends on what runs there: an imperative agent could scavenge a co-resident tenant's in-memory or shuffle data, but an SDP agent emits inert declarative transforms that the framework runs — never agent code. Shared execution is safe for declarative agents in a way it isn't for imperative ones, so physical separation drops from requirement to optional defense-in-depth. Two more properties make this production-shaped rather than a lab convenience: a Connect server pool needn't be homogeneous (it can span AWS, on-prem, Databricks, routing to the best fit), and the pressure moves off Connect onto the catalog — a metastore that owns metadata, authz, and vending, not the write path. Catalog-side scale is itself left to future work.
 
-What's proven vs frontier: the mechanism below demonstrates on **Model A**, the strongest-isolation end of the spectrum where every layer is physically separate. The hybrid headline — two tenants sharing one Connect server who still can't touch each other — is the proof being re-earned on the EKS-native platform, named as frontier rather than claimed.
+Proven vs frontier: the five links below run on **Model A** — one server per tenant, the strongest-isolation end of the spectrum. Two tenants sharing one Connect server who still can't touch each other is the hybrid's headline, and it's named as frontier rather than claimed.
 
 **The adversary, and the five paths.** The threat is §2's: a tenant-A agent that is fully untrusted — it may emit code that executes on the cluster, hallucinate, or actively try to reach tenant B's data. Reaching tenant B decomposes into exactly five paths, the ledger below. Each is closed by a different layer, each layer is independently defeatable, so all five must hold. And the later layers can't backstop failure of the earlier ones: a routing or custody failure produces a legitimately issued tenant-B identity, not a forgery, which the catalog and storage gates would then correctly serve. The early links keep the identity honest; the late links bound what an honest identity may do. That's why the chain is non-redundant.
 
@@ -381,13 +381,9 @@ The vend is configured, not narrated — each tenant's storage profile names its
 
 Implementation notes for link 1: over gRPC the no-route deny surfaces as an HTTP-200 carrying `x-routed-to=DENIED` and `grpc-message: no tenant route` (plain HTTP gets a real 403). Two server-side checks bar dialing in around the gateway: the PSK bearer the gateway injects (an infrastructure secret, not per-tenant) and the principal-pinning interceptor (rejects a `user_id` that doesn't match the gateway-derived `x-connect-principal`). The per-tenant servers are ClusterIP-only but bind `0.0.0.0:15002`, so those two secrets — not topology — are today's door; a `NetworkPolicy` is shipped as defense-in-depth but not yet applied.
 
-**Proven link by link, not one composed request.** Each link runs on live EKS, and links 2–5 already compose: a write through tenant-A's server draws a tenant-scoped vend from the authorization-enabled catalog and runs on tenant-A's executors. Two honest seams remain: the storage-scoping forensic was captured against the fleet-scoped catalog while routing, custody, execution, and authorization ran against the authorization-enabled one; and a single request traversing all five links hasn't been captured as one job. Both are named so nobody reads a composed run that didn't happen.
-
-**Vend vs custody, the §3↔§4 line.** The catalog vends short-lived, scoped credentials but never hands them to an agent. Holding and managing the vended credential — custody plus the agent interface — is the orchestration layer's job (§4/Omnigent). §3 owns the catalog as grant authority and vendor; §4 owns custody.
+**Proven link by link, not one composed request.** Links 2–5 already compose: a write through tenant-A's server draws a tenant-scoped vend and runs on tenant-A's executors. The per-link probes are narrower than they look. The storage probe (a 12-task per-write delta) shows only that execution left the driver onto a dedicated pod; per-tenant pod disjointness is the separate multi-server result (link 3, distinct IPs). And the cross-tenant deny is shown by replaying the vended credential against the other prefix, not by an executor refused in-cluster (CloudTrail: every warehouse call rides the vend; fleet IRSA, zero data calls). Two seams stay named rather than hidden: the storage-scoping forensic predates the authorization-enabled catalog, and one request traversing all five links hasn't been captured as one job. Full narrative: `paper/notes/PLATFORM_LAB_NOTEBOOK.md`.
 
 [[[SVG-CUSTODY]]]
-
-**Honest scoping, per link.** Two measurement caveats the per-link proofs carry, stated so they aren't glossed over. The storage-scoping probe (a per-write delta of 12 tasks around an 8-partition shuffle under `spark.master=k8s`) proves only that execution left the driver onto a dedicated executor pod — and on that shared-server run both tenants landed on the same pod, so per-tenant pod disjointness is the separate multi-server result (link 3, distinct pod IPs). And the cross-tenant storage denial is observed by replaying the vended credential against the other prefix, not by an executor being refused in-cluster; the executor-side channel shows only that all FileIO used the vend (CloudTrail: fleet IRSA, zero data calls). Full build + proof narrative: `paper/notes/PLATFORM_LAB_NOTEBOOK.md`.
 
 ### Catalog binding: Lakekeeper and Unity Catalog OSS
 
@@ -433,9 +429,10 @@ Where Unity Catalog OSS is genuinely weaker (and it is), stamped to v0.5.0:
 ---
 
 # SECTION 4, Omnigent: Governed Multi-Agent Orchestration for Data Engineering
-### An orchestration layer for a fleet of governed agents
 
 **The thesis.** §3 governs one agent safely. **Omnigent** — an orchestration layer enacted at runtime by one orchestrator driving credential-free sub-agent workers — governs a fleet. A fleet isn't "more agents in parallel"; an orchestration layer makes many data-engineering agents cheaper, higher quality, governed, and collectively knowledgeable in ways N independent sessions can't be by construction, having no shared coordination layer. The load-bearing one is governance: one custodian holds every per-tenant credential from §3 and enforces each tenant's contextual data policy at submit time, so the fleet stays credential-free and policy-bound, §2's boundary preserved at fleet scale. The keystone and the orchestration pattern run in the capstone below; the quantitative cost/quality numbers are the separate pre-registered study (S4.6).
+
+[[[SVG-SECTION4]]]
 
 - **S4.1 Cost: heterogeneous model routing.** Match the model to the task — cheap for a trivial fix, strong for a refactor, a different vendor for review. Metric: cost-per-correct-pipeline, §1's H5.3 lifted to the fleet. Number deferred to S4.6.
 - **S4.2 Quality: cross-vendor review.** A different-vendor reviewer catches defects a correlated-blind-spot same-vendor review structurally misses. A testable catch-rate hypothesis; number deferred to S4.6.
@@ -448,7 +445,7 @@ Where Unity Catalog OSS is genuinely weaker (and it is), stamped to v0.5.0:
 
 Two things ran on the live §3 platform, both working mechanism rather than measured number. Custody: one custodian holds and rotates every per-tenant credential while a credential-free fleet submits specs and gets pass/fail. Orchestration: model routing, cross-vendor review, and skill injection driven natively by a single Omnigent agent.
 
-The capstone ran in two stages: a deterministic wrapper first (the orchestrator decomposes, a script drives routing, custody, review, repair), then the same build native and autonomous (one agent, one custodian tool, the whole loop). From one brief it built end-to-end medallions (bronze to silver to gold) for **three isolated tenants**:
+The capstone ran in two stages: a deterministic wrapper first (the orchestrator decomposes, a script drives routing, custody, review, repair), then the same build native and autonomous (one agent, one custodian tool, the whole loop). From one brief, Omnigent's orchestrator (**Polly**) built end-to-end medallions (bronze to silver to gold) for **three isolated tenants**:
 
 - **Skill:** every worker authored against the one governed `pyspark-sdp` skill.
 - **Route:** authoring split across vendors (local Qwen, Claude Opus, OpenAI), re-routing live when one vendor's harness failed to start.

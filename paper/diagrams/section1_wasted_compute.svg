@@ -1,6 +1,6 @@
 <svg width="100%" viewBox="0 0 680 288" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
-<title>Section 4.3 (N2): wasted compute on failed attempts, imperative vs SDP</title>
-<desc>Executor-seconds spent on attempts that ultimately failed, measured as real Spark stage-diff executor-seconds over a 48-cell sweep on an in-process Spark engine (live-EKS confirmatory run deferred to Phase 2b). Bare imperative wastes 521 executor-seconds because spark-submit executes over the data and only then discovers the fault. SDP wastes about 0.5 executor-seconds because its dry-run rejects a bad pipeline before any executor starts. The ratio is roughly one thousand times, finite versus about zero. At production scale a fleet authoring a thousand pipelines a week would waste about five thousand dollars a month of compute that SDP never spends.</desc>
+<title>§1.4.3 (N2): wasted compute on failed attempts, imperative vs SDP</title>
+<desc>Executor-seconds spent on attempts that ultimately failed, measured as real Spark stage-diff executor-seconds and confirmed on EKS by a 48-cell sweep. Bare imperative wastes 521 executor-seconds ($0.028) because spark-submit executes over the data and only then discovers the fault; SDP wastes about 0.5 ($≈0) because its dry-run rejects a bad pipeline before any executor starts — roughly 1000× on failed attempts. Total compute runs ~34× (A $0.032 vs B $0.0009). At production scale a fleet authoring ~1,000 pipelines a week projects to ~$5,000/month of compute SDP's gate never spends.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   .th{font-size:13px;font-weight:500}.ts{font-size:11px;fill:#5c6b66}
@@ -10,7 +10,7 @@
   .teal rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:.75}
 </style>
 
-<text x="40" y="18" class="lab">WASTED COMPUTE ON FAILED ATTEMPTS · MEASURED, 48-CELL IN-PROCESS SWEEP</text>
+<text x="40" y="18" class="lab">WASTED COMPUTE ON FAILED ATTEMPTS · MEASURED, 48-CELL SWEEP · CONFIRMED ON EKS</text>
 <text x="40" y="36" class="ts">executor-seconds spent on attempts that ultimately failed</text>
 
 <!-- A bar -->
@@ -28,7 +28,7 @@
 <!-- headline ratio -->
 <text x="130" y="196" class="big">≈ 1000×</text>
 <text x="250" y="196" class="th" fill="#5c6b66">more wasted compute · finite vs ≈0</text>
-<text x="130" y="214" class="ts">also: ~34× total compute · ~7× cost per correct pipeline</text>
+<text x="130" y="214" class="ts">also: ~34× total compute (A $0.032 vs B $0.0009)</text>
 
 <!-- projection -->
 <rect x="40" y="228" width="600" height="46" rx="6" fill="#F1EFE8" stroke="#8a8a82" stroke-width=".5"/>

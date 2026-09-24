@@ -69,10 +69,10 @@ def git_short():
 MATURITY = [
     ("SECTION 1", "Complete", "powered study · results bound", "done"),
     ("SECTION 2", "Demonstrated", "the agent-native dev loop", "done"),
-    ("SECTION 3", "Demonstrated", "5-layer per-tenant isolation, live on EKS", "done"),
-    ("SECTION 4", "Thesis + core", "custody keystone + governed fleet demonstrated on the platform · numbers separate", "stub"),
-    ("Appendix S2-A", "Reference spec", "executable target (SSOT)", "ref"),
-    ("Appendix S3-A", "Reference spec", "executable target (SSOT)", "ref"),
+    ("SECTION 3", "Demonstrated", "five-layer tenant isolation, live on EKS", "done"),
+    ("SECTION 4", "Proposed", "core demonstrated on the live platform · numbers deferred", "stub"),
+    ("Appendix S2-A", "Reference spec", "executable target", "ref"),
+    ("Appendix S3-A", "Reference spec", "executable target", "ref"),
 ]
 def maturity_for(text):
     for key, label, sub, cls in MATURITY:
@@ -84,13 +84,6 @@ def load_svg(name):
     return (DIAG / name).read_text(encoding="utf-8")
 
 md_text = SRC.read_text(encoding="utf-8")
-
-# inject the §4 diagram placeholder right after its subtitle (§3's SVG-SECTION3 is now
-# placed explicitly in PAPER.md after the §3 Introduction, since §3 dropped its subtitle)
-md_text = md_text.replace(
-    "### An orchestration layer for a fleet of governed agents",
-    "### An orchestration layer for a fleet of governed agents\n\n[[[SVG-SECTION4]]]\n",
-    1)
 
 md = markdown.Markdown(extensions=["tables", "fenced_code", "sane_lists", "attr_list", "toc"],
                        extension_configs={"toc": {"permalink": False, "toc_depth": "1-2"}})
@@ -156,7 +149,7 @@ body = body.replace("<p>[[[SVG-CUSTODIAN]]]</p>",
            "The credential custodian at fleet scale (S4.3), demonstrated. A fleet of credential-free agents submits inert specs and receives only pass or fail; one custodian holds and rotates every per-tenant credential, minting a fresh short-lived token per job and running the work over the §3 catalog. Credentials never cross back to the agents, and §3's per-tenant isolation holds under custody (a cross-tenant read is refused)."))
 body = body.replace("<p>[[[SVG-CAPSTONE-FLEET]]]</p>",
     figure(load_svg("section4_capstone_fleet.svg"),
-           "The demonstrated core on the platform's own domain (S4.5). Omnigent's Polly decomposes one brief into per-customer medallions, routes authoring across three vendors by difficulty, has a different vendor review, and submits each through the custodian, which runs it over that customer's own live tenant and enforces its contextual data policy. On failure the fleet repairs and converges (the §2 dev loop at fleet scale); every cross-tenant read is denied, so §3 isolation holds. A demonstration that the mechanism runs, wired natively in the orchestration layer; the numbers are S4.7's separate study."))
+           "The demonstrated core on the platform's own domain (S4.5). Polly decomposes one brief into per-customer medallions, routes authoring across three vendors by difficulty, has a different vendor review, and submits each through the custodian, which runs it over that customer's own live tenant and enforces its contextual data policy. On failure the fleet repairs and converges (the §2 dev loop at fleet scale); every cross-tenant read is denied, so §3 isolation holds. The numbers are S4.6's separate study."))
 body = body.replace("<p>[[[SVG-CONTAINED]]]</p>",
     figure(load_svg("section4_contained_omnigent.svg"),
            "The contained deployment shape (architecture): the Omnigent server, the custodian, and the credential-free agent fleet as pods in the client's EKS, over the Section 3 platform, with one IdP governing both. S4.5's capstone demonstrates the mechanism; this is how it is packaged for a client via the official Omnigent Kubernetes path."))
@@ -180,7 +173,7 @@ body = body.replace("<p>[[[SVG-WHERE]]]</p>",
            "The load-bearing result. Structural defects (D1/D4/D5) meet a boundary, before any data is processed. Bare imperative has no structural gate, so zero are caught early; four surface later at runtime, after compute is spent. SDP's framework dry-run catches 79 at that boundary before any executor starts; 30 more surface at runtime. Neither arm ships a structural defect."))
 body = body.replace("<p>[[[SVG-WASTE]]]</p>",
     figure(load_svg("section1_wasted_compute.svg"),
-           "The sharpest cost result (N2), measured on live EKS. Executor-seconds spent on attempts that ultimately failed: bare imperative burns 521 because spark-submit runs over the data before the fault surfaces; SDP burns ≈0.5 because its dry-run rejects the pipeline before any executor starts. Roughly 1000×, finite vs ≈0. The projection scales the measured mechanism to production-sized tasks."))
+           "The sharpest cost result (N2). Executor-seconds spent on attempts that ultimately failed: bare imperative burns 521 because spark-submit runs over the data before the fault surfaces; SDP burns ≈0.5 because its dry-run rejects the pipeline before any executor starts. Roughly 1000×; total compute ~34×. The projection scales the measured mechanism to production-sized tasks."))
 body = body.replace("<p>[[[SVG-COST]]]</p>",
     figure(load_svg("cost_tokens_conciseness.svg"),
            "The cost of the declarative paradigm, arm B relative to arm A (= 100%): SDP writes far less code and spends more tokens. Bars show B as a percentage of A; absolute medians beneath."))
@@ -238,12 +231,12 @@ SECTIONS = [
       "an agent as tenant A <b>cannot reach tenant B by any path</b>: routing &middot; token custody &middot; execution &middot; catalog authz &middot; storage",
       "cross-tenant <b>AccessDenied</b> both directions; fleet role makes <b>0</b> warehouse data calls (CloudTrail); un-granted principal <b>403</b>",
       "only multi-tenant <b>scale</b> remains frontier"]),
-    ("4", "section-4-omnigent-governed-multi-agent-orchestration-for-data-engineering", "Running it at fleet scale", "stub", "Thesis + core",
+    ("4", "section-4-omnigent-governed-multi-agent-orchestration-for-data-engineering", "Running it at fleet scale", "stub", "Proposed",
      "The orchestration layer over a fleet of governed agents.",
      ["<b>credential custody, demonstrated</b> (S4.3): one custodian holds + rotates every credential, a credential-free fleet, §3 isolation preserved",
       "<b>governed fleet, demonstrated on the platform</b> (S4.5): Polly built medallions for three isolated customers over their own live tenants, cross-vendor routed + reviewed, credential-free via the custodian, repaired to pass under each customer's contextual policy, every cross-tenant read denied",
       "<b>the pattern this paper was built with</b>: heterogeneous agents, adversarial cross-review, one shared governed skill set",
-      "the quantitative fleet study (cost / quality numbers) is a separate experiment (S4.7)"]),
+      "the quantitative fleet study (cost / quality numbers) is a separate experiment (S4.6)"]),
 ]
 def scard(n, hid, title, cls, chip, blurb, bullets):
     lis = "".join(f"<li>{b}</li>" for b in bullets)

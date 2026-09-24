@@ -1,5 +1,5 @@
 <svg width="100%" viewBox="0 0 680 300" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
-<title>Section 4.1.1: silent-defect composition by class, arm A vs arm B</title>
+<title>§1.4.1: silent-defect composition by class, arm A vs arm B</title>
 <desc>Silent semantic defects shipped, per class, comparing bare imperative (A) and SDP (B). D6 nondeterministic dedup is the largest class and is tied, 38 versus 39, a wash. D7 timezone and day-bucket is SDP-specific, imperative ships zero and SDP ships seven, and it closes to zero once the skill teaches the idiom. D8 silent row-drop is B worse by six, 51 versus 57. D2 timestamp misparse is negligible, 1 versus 3. The whole A minus B gap is D7 plus D8; the largest class, D6, is tied.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
