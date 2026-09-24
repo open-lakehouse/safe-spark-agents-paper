@@ -1,45 +1,45 @@
-<svg width="100%" viewBox="0 0 680 300" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+<svg width="100%" viewBox="0 0 680 316" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
 <title>§1.4.1: silent-defect composition by class, arm A vs arm B</title>
-<desc>Silent semantic defects shipped, per class, comparing bare imperative (A) and SDP (B). D6 nondeterministic dedup is the largest class and is tied, 38 versus 39, a wash. D7 timezone and day-bucket is SDP-specific, imperative ships zero and SDP ships seven, and it closes to zero once the skill teaches the idiom. D8 silent row-drop is B worse by six, 51 versus 57. D2 timestamp misparse is negligible, 1 versus 3. The whole A minus B gap is D7 plus D8; the largest class, D6, is tied.</desc>
+<desc>Silent semantic defects shipped, per class, comparing bare imperative (A) and SDP (B). D6 nondeterministic dedup is the largest class and is tied, 38 versus 39. D7 timezone/day-bucket is SDP-specific: imperative ships 0, SDP 7, and it closes to 0 once the skill teaches the idiom. D8 silent row-drop is B worse by 6 (51 vs 57). D2 timestamp misparse is negligible (1 vs 3). The whole A-minus-B gap is D7 plus D8; D6 is tied.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .th{font-size:13px;font-weight:500;fill:#16201e}.ts{font-size:11px;fill:#5c6b66}
-  .lab{font-size:11px;font-weight:600;fill:#5c6b66;letter-spacing:.03em}
-  .a rect{fill:#DCD8CC;stroke:#8a8a82;stroke-width:.75}
-  .b rect{fill:#A9D9C9;stroke:#0F6E56;stroke-width:.75}
-  .av{font-size:11px;font-weight:600;fill:#6b6a63}.bv{font-size:11px;font-weight:600;fill:#0F6E56}
+  .kick{font-size:11px;font-weight:700;letter-spacing:.07em;fill:#5d6b66}
+  .cls{font-size:13px;font-weight:600;fill:#26312e}
+  .tag{font-size:11px;font-weight:600;fill:#5d6b66}
+  .cnt{font-size:12.5px;font-weight:700}
+  .note{font-size:11px;fill:#5d6b66}
+  .foot{font-size:11.5px;fill:#8a5a0b}
+  .a{fill:#dfe4e1}.b{fill:#0f6e56}
 </style>
 
-<!-- legend -->
-<rect x="150" y="14" width="13" height="10" rx="2" fill="#DCD8CC" stroke="#8a8a82" stroke-width=".75"/>
-<text x="169" y="23" class="ts">A (bare imperative) ships</text>
-<rect x="320" y="14" width="13" height="10" rx="2" fill="#A9D9C9" stroke="#0F6E56" stroke-width=".75"/>
-<text x="339" y="23" class="ts">B (SDP) ships</text>
+<text x="20" y="20" class="kick">SILENT-DEFECT COMPOSITION BY CLASS · WHO SHIPS WHAT</text>
+<rect x="252" y="11" width="13" height="11" rx="2" fill="#dfe4e1"/><text x="269" y="20" class="tag">A · bare imperative</text>
+<rect x="372" y="11" width="13" height="11" rx="2" fill="#0f6e56"/><text x="389" y="20" class="tag">B · SDP</text>
 
-<!-- D6: tied -->
-<text x="40" y="66" class="th">D6 dedup</text>
-<g class="a"><rect x="150" y="44" width="228" height="13" rx="2"/></g><text x="384" y="55" class="av">38</text>
-<g class="b"><rect x="150" y="64" width="234" height="13" rx="2"/></g><text x="390" y="75" class="bv">39</text>
-<text x="640" y="62" class="ts" text-anchor="end">largest class, tied (a wash)</text>
+<text x="20" y="60" class="cls">D6 nondeterministic dedup</text>
+<rect x="130" y="46" width="167" height="15" rx="3" class="a"/><text x="305" y="58" class="cnt" fill="#3c4642">38</text>
+<rect x="130" y="66" width="172" height="15" rx="3" class="b"/><text x="310" y="78" class="cnt" fill="#0f6e56">39</text>
+<text x="660" y="58" class="note" text-anchor="end">largest class · tied (a wash)</text>
+<text x="660" y="78" class="note" text-anchor="end">not SDP-specific</text>
 
-<!-- D7: SDP-specific driver (highlighted) -->
-<rect x="30" y="92" width="620" height="52" rx="6" fill="#EEF6F2" stroke="#0F6E56" stroke-width=".5" stroke-dasharray="3 3"/>
-<text x="40" y="122" class="th">D7 timezone</text>
-<g class="a"><rect x="150" y="100" width="2" height="13" rx="1"/></g><text x="158" y="111" class="av">0</text>
-<g class="b"><rect x="150" y="120" width="42" height="13" rx="2"/></g><text x="198" y="131" class="bv">7</text>
-<text x="640" y="118" class="ts" text-anchor="end" fill="#0F6E56">SDP-only, closes to 0 once taught</text>
+<g>
+  <rect x="14" y="92" width="652" height="60" rx="8" fill="#e3f2ec" fill-opacity=".5" stroke="#0f6e56" stroke-width="1"/>
+  <text x="20" y="114" class="cls">D7 timezone / day-bucket</text>
+  <rect x="130" y="106" width="2" height="15" rx="1.5" class="a"/><text x="140" y="118" class="cnt" fill="#3c4642">0</text>
+  <rect x="130" y="126" width="31" height="15" rx="3" class="b"/><text x="169" y="138" class="cnt" fill="#0f6e56">7</text>
+  <text x="660" y="118" class="note" text-anchor="end" fill="#0f6e56">SDP-only · imperative never ships it</text>
+  <text x="660" y="138" class="note" text-anchor="end" fill="#0f6e56">closes to 0 once the skill is taught</text>
+</g>
 
-<!-- D8: B worse by 6 -->
-<text x="40" y="184" class="th">D8 row-drop</text>
-<g class="a"><rect x="150" y="162" width="306" height="13" rx="2"/></g><text x="462" y="173" class="av">51</text>
-<g class="b"><rect x="150" y="182" width="342" height="13" rx="2"/></g><text x="498" y="193" class="bv">57</text>
-<text x="640" y="180" class="ts" text-anchor="end">B worse by +6</text>
+<text x="20" y="184" class="cls">D8 silent row-drop / bad currency</text>
+<rect x="130" y="168" width="224" height="15" rx="3" class="a"/><text x="362" y="180" class="cnt" fill="#3c4642">51</text>
+<rect x="130" y="188" width="251" height="15" rx="3" class="b"/><text x="389" y="200" class="cnt" fill="#0f6e56">57</text>
+<text x="660" y="180" class="note" text-anchor="end">B worse by +6 · task-concentrated</text>
 
-<!-- D2: negligible -->
-<text x="40" y="242" class="th">D2 timestamp</text>
-<g class="a"><rect x="150" y="220" width="6" height="13" rx="2"/></g><text x="162" y="231" class="av">1</text>
-<g class="b"><rect x="150" y="240" width="18" height="13" rx="2"/></g><text x="174" y="251" class="bv">3</text>
-<text x="640" y="238" class="ts" text-anchor="end">negligible</text>
+<text x="20" y="244" class="cls">D2 timestamp misparse</text>
+<rect x="130" y="228" width="4" height="15" rx="2" class="a"/><text x="142" y="240" class="cnt" fill="#3c4642">1</text>
+<rect x="130" y="248" width="13" height="15" rx="3" class="b"/><text x="151" y="260" class="cnt" fill="#0f6e56">3</text>
+<text x="660" y="240" class="note" text-anchor="end">negligible</text>
 
-<text x="40" y="286" class="lab">THE WHOLE A−B GAP IS D7 (+7) AND D8 (+6) · THE LARGEST CLASS, D6, IS TIED</text>
+<text x="20" y="296" class="foot">The whole A−B gap is D7 (+7) and D8 (+6); the largest class, D6, is tied.</text>
 </svg>

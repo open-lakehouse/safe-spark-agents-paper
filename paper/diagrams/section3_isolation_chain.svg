@@ -3,55 +3,47 @@
 <desc>An agent authenticated as tenant A is routed to its own Connect server, handed only its own credential, run on its own executor pods, authorized at the catalog only for itself, and prefix-scoped at storage. Tenant B travels a fully separate lane. Five layers, all demonstrated on live EKS; an agent for tenant A cannot reach tenant B by any path.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .th{font-size:13px;font-weight:500;fill:#16201e}.ts{font-size:11px;fill:#5c6b66}
-  .lab{font-size:11px;font-weight:600;fill:#5c6b66;letter-spacing:.02em}
-  .arr{stroke:#93a29d;stroke-width:1.5;fill:none}
-  .deny{font-size:11px;font-weight:600;fill:#8a5a0b}.ok{font-size:11px;font-weight:600;fill:#3B6D11}
-  .a rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:.75}.a .th{fill:#085041}.a .ts{fill:#0F6E56}
-  .b rect{fill:#EEEDFE;stroke:#534AB7;stroke-width:.75}.b .th{fill:#3C3489}.b .ts{fill:#534AB7}
-  .gate rect{fill:#E6F1FB;stroke:#185FA5;stroke-width:.9}.gate .th{fill:#0C447C}.gate .ts{fill:#185FA5}
-  .pfx{fill:#ffffff;stroke:#c4d1cc;stroke-width:.75;stroke-dasharray:3 2}
+  .kick{font-size:11px;font-weight:700;letter-spacing:.07em;fill:#5d6b66}
+  .h{font-size:12.5px;font-weight:600;fill:#26312e}.sub{font-size:11px;fill:#5d6b66}
+  .step{font-size:11px;font-weight:700;letter-spacing:.05em;fill:#5d6b66}
+  .arr{stroke:#8a9690;stroke-width:1.5;fill:none}
+  .a rect{fill:#e3f2ec;stroke:#0f6e56;stroke-width:1}.a .h{fill:#083f33}.a .sub{fill:#0f6e56}
+  .b rect{fill:#eceafb;stroke:#534ab7;stroke-width:1}.b .h{fill:#3c3489}.b .sub{fill:#534ab7}
+  .gate rect{fill:#eef3f0;stroke:#7d8a84;stroke-width:1}.gate .h{fill:#3c4642}.gate .sub{fill:#5d6b66}
+  .pfx rect{fill:#ffffff;stroke:#7d8a84;stroke-width:.9;stroke-dasharray:3 2}
 </style>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
 
-<text x="40" y="18" class="lab">FIVE LAYERS, ALL DEMONSTRATED ON LIVE EKS</text>
-<text x="640" y="18" class="ok" text-anchor="end">an agent for tenant A cannot reach tenant B by any path</text>
+<text x="40" y="20" class="kick">FIVE LAYERS, ALL DEMONSTRATED ON LIVE EKS</text>
+<text x="640" y="20" class="sub" fill="#0f6e56" text-anchor="end">tenant A cannot reach tenant B by any path</text>
 
-<!-- agents -->
-<g class="a"><rect x="48" y="30" width="284" height="42" rx="6"/><text x="190" y="49" class="th" text-anchor="middle">agent · tenant A</text><text x="190" y="64" class="ts" text-anchor="middle">client cert SAN spiffe://…/tenant_a</text></g>
-<g class="b"><rect x="356" y="30" width="284" height="42" rx="6"/><text x="498" y="49" class="th" text-anchor="middle">agent · tenant B</text><text x="498" y="64" class="ts" text-anchor="middle">client cert SAN spiffe://…/tenant_b</text></g>
-<line x1="190" y1="72" x2="190" y2="90" class="arr" marker-end="url(#arrow)"/>
-<line x1="498" y1="72" x2="498" y2="90" class="arr" marker-end="url(#arrow)"/>
+<g class="a"><rect x="48" y="32" width="284" height="42" rx="7"/><text x="190" y="51" class="h" text-anchor="middle" fill="#083f33">agent · tenant A</text><text x="190" y="66" class="sub" text-anchor="middle">cert SAN spiffe://…/tenant_a</text></g>
+<g class="b"><rect x="356" y="32" width="284" height="42" rx="7"/><text x="498" y="51" class="h" text-anchor="middle" fill="#3c3489">agent · tenant B</text><text x="498" y="66" class="sub" text-anchor="middle">cert SAN spiffe://…/tenant_b</text></g>
+<line x1="190" y1="74" x2="190" y2="90" class="arr" marker-end="url(#arrow)"/>
+<line x1="498" y1="74" x2="498" y2="90" class="arr" marker-end="url(#arrow)"/>
 
-<!-- 1 ingress gateway (full) -->
-<text x="48" y="104" class="lab">1 · INGRESS ROUTING</text>
-<g class="gate"><rect x="48" y="110" width="592" height="44" rx="6"/><text x="344" y="129" class="th" text-anchor="middle">mTLS gateway · routes by the cert principal to that tenant's own server</text><text x="344" y="144" class="ts" text-anchor="middle">tenant_a cert → server A · tenant_b cert → server B · un-granted → 403 · no cert → refused</text></g>
-<line x1="190" y1="154" x2="190" y2="176" class="arr" marker-end="url(#arrow)"/>
-<line x1="498" y1="154" x2="498" y2="176" class="arr" marker-end="url(#arrow)"/>
+<text x="48" y="106" class="step">1 · INGRESS ROUTING</text>
+<g class="gate"><rect x="48" y="112" width="592" height="44" rx="7"/><text x="344" y="131" class="h" text-anchor="middle">mTLS gateway routes by cert principal to that tenant's own server</text><text x="344" y="147" class="sub" text-anchor="middle">tenant_a cert → server A · tenant_b cert → server B · un-granted → 403 · no cert → refused</text></g>
+<line x1="190" y1="156" x2="190" y2="172" class="arr" marker-end="url(#arrow)"/>
+<line x1="498" y1="156" x2="498" y2="172" class="arr" marker-end="url(#arrow)"/>
 
-<!-- 2 per-tenant Connect servers (two lanes) -->
-<text x="48" y="190" class="lab">2 · TOKEN CUSTODY <tspan class="ts" font-weight="400">· each server injects only its own tenant's token; the agent never holds one</tspan></text>
-<g class="a"><rect x="48" y="196" width="284" height="42" rx="6"/><text x="190" y="215" class="th" text-anchor="middle">spark-connect-tenant-a</text><text x="190" y="230" class="ts" text-anchor="middle">injects token A</text></g>
-<g class="b"><rect x="356" y="196" width="284" height="42" rx="6"/><text x="498" y="215" class="th" text-anchor="middle">spark-connect-tenant-b</text><text x="498" y="230" class="ts" text-anchor="middle">injects token B</text></g>
-<line x1="190" y1="238" x2="190" y2="258" class="arr" marker-end="url(#arrow)"/>
-<line x1="498" y1="238" x2="498" y2="258" class="arr" marker-end="url(#arrow)"/>
+<text x="48" y="188" class="step">2 · TOKEN CUSTODY · each server injects only its own tenant's token</text>
+<g class="a"><rect x="48" y="194" width="284" height="42" rx="7"/><text x="190" y="213" class="h" text-anchor="middle" fill="#083f33">spark-connect-tenant-a</text><text x="190" y="228" class="sub" text-anchor="middle">injects token A</text></g>
+<g class="b"><rect x="356" y="194" width="284" height="42" rx="7"/><text x="498" y="213" class="h" text-anchor="middle" fill="#3c3489">spark-connect-tenant-b</text><text x="498" y="228" class="sub" text-anchor="middle">injects token B</text></g>
+<line x1="190" y1="236" x2="190" y2="252" class="arr" marker-end="url(#arrow)"/>
+<line x1="498" y1="236" x2="498" y2="252" class="arr" marker-end="url(#arrow)"/>
 
-<!-- 3 executors (two lanes) -->
-<text x="48" y="272" class="lab">3 · EXECUTION ISOLATION <tspan class="ts" font-weight="400">· disjoint executor pods; the two tenants never share a JVM</tspan></text>
-<g class="a"><rect x="48" y="278" width="284" height="42" rx="6"/><text x="190" y="297" class="th" text-anchor="middle">tenant_a executor pods</text><text x="190" y="312" class="ts" text-anchor="middle">own driver app</text></g>
-<g class="b"><rect x="356" y="278" width="284" height="42" rx="6"/><text x="498" y="297" class="th" text-anchor="middle">tenant_b executor pods</text><text x="498" y="312" class="ts" text-anchor="middle">separate driver app</text></g>
-<line x1="190" y1="320" x2="190" y2="340" class="arr" marker-end="url(#arrow)"/>
-<line x1="498" y1="320" x2="498" y2="340" class="arr" marker-end="url(#arrow)"/>
+<text x="48" y="268" class="step">3 · EXECUTION ISOLATION · disjoint pods, never a shared JVM</text>
+<g class="a"><rect x="48" y="274" width="284" height="42" rx="7"/><text x="190" y="293" class="h" text-anchor="middle" fill="#083f33">tenant_a executor pods</text><text x="190" y="308" class="sub" text-anchor="middle">own driver app</text></g>
+<g class="b"><rect x="356" y="274" width="284" height="42" rx="7"/><text x="498" y="293" class="h" text-anchor="middle" fill="#3c3489">tenant_b executor pods</text><text x="498" y="308" class="sub" text-anchor="middle">separate driver app</text></g>
+<line x1="190" y1="316" x2="190" y2="332" class="arr" marker-end="url(#arrow)"/>
+<line x1="498" y1="316" x2="498" y2="332" class="arr" marker-end="url(#arrow)"/>
 
-<!-- 4 catalog authz (full) -->
-<text x="48" y="354" class="lab">4 · CATALOG AUTHORIZATION</text>
-<g class="gate"><rect x="48" y="360" width="592" height="44" rx="6"/><text x="344" y="379" class="th" text-anchor="middle">Lakekeeper + OpenFGA · grants each identity only its own warehouse</text><text x="344" y="394" class="ts" text-anchor="middle">tenant_a asking for tenant_b's table or vended credential → 404 · own → 200</text></g>
-<line x1="344" y1="404" x2="344" y2="422" class="arr" marker-end="url(#arrow)"/>
+<text x="48" y="348" class="step">4 · CATALOG AUTHORIZATION</text>
+<g class="gate"><rect x="48" y="354" width="592" height="44" rx="7"/><text x="344" y="373" class="h" text-anchor="middle">Lakekeeper + OpenFGA · grants each identity only its own warehouse</text><text x="344" y="389" class="sub" text-anchor="middle">tenant_a asking for tenant_b's table or vend → 404 · its own → 200</text></g>
+<line x1="344" y1="398" x2="344" y2="414" class="arr" marker-end="url(#arrow)"/>
 
-<!-- 5 storage (full, prefixes) -->
-<text x="48" y="436" class="lab">5 · STORAGE SCOPING</text>
-<g class="gate"><rect x="48" y="442" width="592" height="40" rx="6"/><text x="150" y="467" class="th" text-anchor="middle">S3 · prefix-scoped vend</text>
-  <rect class="pfx" x="270" y="452" width="170" height="20" rx="4"/><text x="355" y="466" class="ts" text-anchor="middle">s3://…/tenant_a/</text>
-  <rect class="pfx" x="452" y="452" width="170" height="20" rx="4"/><text x="537" y="466" class="ts" text-anchor="middle">s3://…/tenant_b/</text></g>
-<text x="640" y="436" class="deny" text-anchor="end">cross-tenant AccessDenied, both directions</text>
+<text x="48" y="430" class="step">5 · STORAGE SCOPING</text>
+<g class="gate"><rect x="48" y="436" width="592" height="44" rx="7"/><text x="120" y="462" class="h" text-anchor="middle" fill="#3c4642">S3 · prefix-scoped</text><g class="pfx"><rect x="240" y="444" width="170" height="22" rx="5"/></g><text x="325" y="459" class="sub" text-anchor="middle" fill="#3c4642">s3://…/tenant_a/</text><g class="pfx"><rect x="422" y="444" width="170" height="22" rx="5"/></g><text x="507" y="459" class="sub" text-anchor="middle" fill="#3c4642">s3://…/tenant_b/</text></g>
+<text x="640" y="430" class="sub" fill="#b9433a" text-anchor="end">cross-tenant AccessDenied, both directions</text>
 </svg>

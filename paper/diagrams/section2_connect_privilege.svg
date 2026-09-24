@@ -1,64 +1,34 @@
-<svg width="100%" viewBox="0 0 720 402" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+<svg width="100%" viewBox="0 0 720 400" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
 <title>The Spark Connect privilege ladder: agent, controller, cluster admin, and who can touch the engine</title>
-<desc>Three privilege tiers separated by the Spark Connect boundary. The agent, an untrusted author, holds only an inert @dp transform with no session, credentials, or endpoint, and cannot run anything, misconfigure, or reach a credential or SparkContext. The controller, a Connect client, holds a Connect session that submits serialized plans plus the S3 credential, but cannot reach SparkContext, the JVM, RDDs, or static cluster config; Connect errors if it tries. Those top two tiers are the client side. Below the Spark Connect boundary is the server side: the cluster admin owns the engine itself, SparkContext, the JVM, the executor pods, and cluster config, the only tier that touches it. A client can submit a plan but cannot cross into the engine, so SparkContext never leaves the cluster admin's side of the line.</desc>
+<desc>Three privilege tiers separated by the Spark Connect boundary. The agent is an untrusted author holding only an inert @dp transform — no session, credentials, or endpoint — and cannot run anything, misconfigure, or reach a credential or SparkContext. The controller is a Connect client that submits serialized plans and holds the S3 credential, but cannot reach SparkContext, the JVM, RDDs, or cluster config; Connect errors if it tries. Below the boundary is the server side: the cluster admin owns the engine itself, SparkContext, the JVM, the executor pods, and cluster config. SparkContext never leaves the cluster admin's side.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .lab{font-size:10px;font-weight:600;letter-spacing:.04em}
-  .th{font-size:13px;font-weight:600}.role{font-size:9px}
-  .k{font-size:10.5px;font-weight:600}.v{font-size:10px}.tn{font-size:9px}
-  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:8.5px}
+  .kick{font-size:11px;font-weight:700;letter-spacing:.07em;fill:#5d6b66}
+  .h{font-size:14px;font-weight:600;fill:#26312e}
+  .role{font-size:11px;fill:#5d6b66}
+  .k{font-size:10.5px;font-weight:700;letter-spacing:.05em}
+  .v{font-size:11.5px;fill:#26312e}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10.5px}
+  .red rect{fill:#fce9e9;stroke:#b9433a;stroke-width:1}
+  .red .rn rect{fill:#f3cfcf;stroke:#b9433a;stroke-width:1}
+  .purp rect{fill:#eceafb;stroke:#534ab7;stroke-width:1}
+  .purp .rn rect{fill:#dddbf2;stroke:#534ab7;stroke-width:1}
+  .teal rect{fill:#e3f2ec;stroke:#0f6e56;stroke-width:1.2}
+  .teal .rn rect{fill:#cfe9de;stroke:#0f6e56;stroke-width:1.2}
 </style>
 
-<text x="16" y="17" class="lab" fill="#5F5E5A">THE SPARK CONNECT PRIVILEGE LADDER: WHO CAN TOUCH THE ENGINE</text>
+<text x="16" y="17" class="kick">THE SPARK CONNECT PRIVILEGE LADDER · WHO CAN TOUCH THE ENGINE</text>
 
-<!-- side brackets -->
-<text x="14" y="150" class="tn" fill="#8a8f8c" transform="rotate(-90 14 150)" text-anchor="middle">CLIENT SIDE · submits plans</text>
-<text x="14" y="330" class="tn" fill="#8a8f8c" transform="rotate(-90 14 330)" text-anchor="middle">SERVER SIDE · runs it</text>
+<g class="red"><rect x="28" y="40" width="678" height="88" rx="9"/><g class="rn"><rect x="28" y="40" width="176" height="88" rx="9"/></g><text x="116" y="78" class="h" text-anchor="middle" fill="#8f2f27">AGENT</text><text x="116" y="95" class="role" text-anchor="middle" fill="#8f2f27">untrusted author</text><text x="116" y="109" class="role" text-anchor="middle" fill="#8f2f27">least privileged</text><text x="220" y="66" class="k" fill="#0f6e56">HOLDS</text><text x="220" y="83" class="v">an inert @dp transform</text><text x="220" y="100" class="role">no session · no credentials · no endpoint</text><text x="452" y="66" class="k" fill="#b9433a">CANNOT</text><text x="452" y="83" class="v">run anything · misconfigure · reach creds</text><text x="452" y="100" class="v">or the SparkContext</text></g>
 
-<!-- ===== Tier 1: AGENT ===== -->
-<rect x="28" y="42" width="678" height="80" rx="8" fill="#FDF3F2" stroke="#b9433a" stroke-width="1"/>
-<rect x="28" y="42" width="176" height="80" rx="8" fill="#F7DEDA" stroke="#b9433a" stroke-width="1"/>
-<text x="116" y="76" class="th" text-anchor="middle" fill="#b9433a">AGENT</text>
-<text x="116" y="93" class="role" text-anchor="middle" fill="#a2483f">untrusted author</text>
-<text x="116" y="106" class="role" text-anchor="middle" fill="#a2483f">(least privileged)</text>
-<text x="220" y="66" class="k" fill="#085041">HOLDS</text>
-<text x="220" y="83" class="v" fill="#16201e">an inert @dp transform</text>
-<text x="220" y="100" class="tn" fill="#5c6b66">no session · no credentials · no endpoint</text>
-<text x="452" y="66" class="k" fill="#b9433a">CANNOT REACH</text>
-<text x="452" y="83" class="v" fill="#16201e">run anything · misconfigure · a credential</text>
-<text x="452" y="100" class="v" fill="#16201e">· or the <tspan font-weight="600">SparkContext</tspan></text>
+<g class="purp"><rect x="28" y="132" width="678" height="88" rx="9"/><g class="rn"><rect x="28" y="132" width="176" height="88" rx="9"/></g><text x="116" y="170" class="h" text-anchor="middle" fill="#3c3489">CONTROLLER</text><text x="116" y="187" class="role" text-anchor="middle" fill="#534ab7">the Connect client</text><text x="116" y="201" class="role" text-anchor="middle" fill="#534ab7">(never the agent)</text><text x="220" y="158" class="k" fill="#0f6e56">HOLDS</text><text x="220" y="175" class="v">a Connect session · submits serialized plans</text><text x="220" y="192" class="v">+ the S3 credential that reads the warehouse</text><text x="452" y="158" class="k" fill="#b9433a">CANNOT</text><text x="452" y="175" class="v">SparkContext · JVM · RDDs · cluster config</text><text x="452" y="192" class="mono" fill="#8f2f27">Connect: JVM_ATTRIBUTE_NOT_SUPPORTED</text></g>
 
-<!-- ===== Tier 2: CONTROLLER ===== -->
-<rect x="28" y="130" width="678" height="86" rx="8" fill="#F2F1FB" stroke="#3C3489" stroke-width="1"/>
-<rect x="28" y="130" width="176" height="86" rx="8" fill="#E4E1F6" stroke="#3C3489" stroke-width="1"/>
-<text x="116" y="166" class="th" text-anchor="middle" fill="#3C3489">CONTROLLER</text>
-<text x="116" y="183" class="role" text-anchor="middle" fill="#5c5b8f">the Connect client</text>
-<text x="116" y="196" class="role" text-anchor="middle" fill="#5c5b8f">(never the agent)</text>
-<text x="220" y="154" class="k" fill="#085041">HOLDS</text>
-<text x="220" y="171" class="v" fill="#16201e">a Connect session, submits serialized plans</text>
-<text x="220" y="188" class="v" fill="#16201e">+ the S3 credential that reads the warehouse</text>
-<text x="452" y="154" class="k" fill="#b9433a">CANNOT REACH</text>
-<text x="452" y="171" class="v" fill="#16201e">SparkContext · JVM · RDDs · cluster config</text>
-<text x="452" y="188" class="mono" fill="#a2483f">Connect: JVM_ATTRIBUTE_NOT_SUPPORTED</text>
+<line x1="28" y1="232" x2="706" y2="232" stroke="#7d8a84" stroke-width="2" stroke-dasharray="7 4"/>
+<rect x="222" y="222" width="278" height="22" rx="11" fill="#eef3f0" stroke="#7d8a84" stroke-width="1"/>
+<text x="361" y="237" class="k" fill="#3c4642" text-anchor="middle">SPARK CONNECT BOUNDARY</text>
 
-<!-- ===== THE BOUNDARY ===== -->
-<line x1="28" y1="232" x2="706" y2="232" stroke="#185FA5" stroke-width="2" stroke-dasharray="7 4"/>
-<rect x="228" y="222" width="278" height="20" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
-<text x="367" y="236" class="lab" fill="#0C447C" text-anchor="middle">SPARK CONNECT BOUNDARY</text>
+<g class="teal"><rect x="28" y="252" width="678" height="92" rx="9"/><g class="rn"><rect x="28" y="252" width="176" height="92" rx="9"/></g><text x="116" y="292" class="h" text-anchor="middle" fill="#083f33">CLUSTER ADMIN</text><text x="116" y="309" class="role" text-anchor="middle" fill="#0f6e56">server side / operator</text><text x="116" y="323" class="role" text-anchor="middle" fill="#0f6e56">owns the engine</text><text x="220" y="278" class="k" fill="#0f6e56">OWNS THE ENGINE</text><text x="220" y="296" class="v">SparkContext · JVM · executor pods · cluster config</text><text x="220" y="313" class="role">the only tier that touches the running engine and data</text><g class="tiny"><rect x="556" y="282" width="140" height="46" rx="7" fill="#ffffff" stroke="#0f6e56" stroke-width="1"/></g><text x="626" y="302" class="v" text-anchor="middle">SparkContext</text><text x="626" y="317" class="role" text-anchor="middle">lives only here</text></g>
 
-<!-- ===== Tier 3: CLUSTER ADMIN ===== -->
-<rect x="28" y="252" width="678" height="88" rx="8" fill="#ECF5F1" stroke="#0F6E56" stroke-width="1.2"/>
-<rect x="28" y="252" width="176" height="88" rx="8" fill="#D6EEE4" stroke="#0F6E56" stroke-width="1.2"/>
-<text x="116" y="288" class="th" text-anchor="middle" fill="#085041">CLUSTER ADMIN</text>
-<text x="116" y="305" class="role" text-anchor="middle" fill="#0F6E56">server side / operator</text>
-<text x="116" y="318" class="role" text-anchor="middle" fill="#0F6E56">(owns the engine)</text>
-<text x="220" y="276" class="k" fill="#085041">OWNS THE ENGINE</text>
-<text x="220" y="294" class="v" fill="#16201e"><tspan font-weight="600">SparkContext</tspan> · JVM · executor pods · cluster config</text>
-<text x="220" y="311" class="tn" fill="#5c6b66">the only tier that touches the running engine and data</text>
-<rect x="556" y="284" width="140" height="44" rx="6" fill="#fff" stroke="#0b7a63" stroke-width="1"/>
-<text x="626" y="302" class="k" text-anchor="middle" fill="#085041">SparkContext</text>
-<text x="626" y="317" class="tn" text-anchor="middle" fill="#5c6b66">lives only here</text>
-
-<text x="28" y="362" class="v" fill="#16201e">A Connect client can submit a plan, but cannot cross the line into the engine that runs it. <tspan font-weight="600">SparkContext never leaves the cluster admin's side.</tspan></text>
-<text x="28" y="380" class="tn" fill="#5c6b66">SDP sits on the top rung by construction: its declarative surface offers no way to reach for a live session at all. Imperative can honor the line, but only because Connect stops it.</text>
+<text x="28" y="366" class="v" fill="#26312e">A plan can cross the line; the engine cannot be touched by a client.</text>
+<text x="28" y="384" class="role">SparkContext never leaves the cluster admin's side: SDP never asks, imperative is stopped when it does.</text>
 </svg>

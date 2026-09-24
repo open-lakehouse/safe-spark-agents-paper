@@ -1,62 +1,55 @@
-<svg width="100%" viewBox="0 0 680 430" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+<svg width="100%" viewBox="0 0 680 418" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
 <title>Section 3: how to reproduce the five-layer isolation stack from SETUP.md</title>
-<desc>The reproduce path from SETUP.md. Once the prerequisites are in place (EKS substrate, IRSA vending roles, per-tenant mTLS certs, the spark-connect image, the warehouse external-id), four sub-deployments are run inside-out, storage first and ingress last. spike/eks stands up layer 5 storage scoping and writes the storage proof; authz/ stands up layer 4 catalog authorization and writes the catalog proof; authz/ multi-server stands up layers 2 and 3 token custody and execution isolation and writes the custody proof; authz/ gateway stands up layer 1 mTLS ingress routing and writes the ingress proof. The five proof logs are the per-layer evidence cited in Section 3.3; one composed request through all five links remains the frontier.</desc>
+<desc>Once the prerequisites are in place (EKS substrate, IRSA vending roles, per-tenant mTLS certs, the spark-connect image, warehouse external-id), four sub-deployments run inside-out, storage first and ingress last: spike/eks stands up layer 5 (storage proof 13/13 + cloudtrail_vend); authz/ stands up layer 4 (catalog proof); authz/ multi-server stands up layers 2+3 (custody proof); authz/ gateway stands up layer 1 (ingress proof). The five proof logs are the per-layer evidence; one composed request through all five links remains the frontier.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .th{font-size:12.5px;font-weight:500}.ts{font-size:10.5px}
-  .lab{font-size:11px;font-weight:600;fill:#5c6b66;letter-spacing:.03em}
-  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px}
-  .arr{stroke:#93a29d;stroke-width:1.5;fill:none}
-  .run rect{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:.75}.run .th{fill:#2C2C2A}.run .mono{fill:#5F5E5A}
-  .lay rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:.75}.lay .th{fill:#085041}.lay .ts{fill:#0F6E56}
-  .prf rect{fill:#E6F1FB;stroke:#185FA5;stroke-width:.75}.prf .th{fill:#0C447C}.prf .mono{fill:#185FA5}
+  .kick{font-size:11px;font-weight:700;letter-spacing:.07em;fill:#5d6b66}
+  .h{font-size:12.5px;font-weight:600;fill:#26312e}.sub{font-size:11px;fill:#5d6b66}
+  .col{font-size:11px;font-weight:700;letter-spacing:.05em;fill:#5d6b66}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10.5px}
+  .arr{stroke:#8a9690;stroke-width:1.4;fill:none}
+  .run rect{fill:#eef3f0;stroke:#7d8a84;stroke-width:1}.run .h{fill:#3c4642}
+  .lay rect{fill:#e3f2ec;stroke:#0f6e56;stroke-width:1}.lay .h{fill:#083f33}
+  .prf rect{fill:#f7efdd;stroke:#8a5a0b;stroke-width:1}.prf .h{fill:#6b4606}
 </style>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
 
-<text x="40" y="18" class="lab">REPRODUCE THE FIVE-LAYER STACK · SETUP.md BUILD ORDER</text>
-<text x="40" y="34" class="ts" fill="#5c6b66">built inside-out: storage first, ingress last (the reverse of the outside-in reading order in the isolation-chain figure)</text>
+<text x="40" y="20" class="kick">REPRODUCE THE FIVE-LAYER STACK · SETUP.md BUILD ORDER</text>
+<text x="40" y="36" class="sub">built inside-out: storage first, ingress last (the reverse of the outside-in reading order)</text>
 
-<!-- prerequisites -->
-<rect x="40" y="44" width="600" height="58" rx="8" fill="none" stroke="#888780" stroke-width="1" stroke-dasharray="4 4" opacity="0.65"/>
-<text x="52" y="61" class="lab">PREREQUISITES (once)</text>
-<text x="52" y="79" class="ts" fill="#5c6b66">EKS substrate (terraform: private API + bastion, OIDC) · IRSA vending roles · warehouse external-id</text>
-<text x="52" y="95" class="ts" fill="#5c6b66">per-tenant mTLS certs (URI-SAN spiffe://safe-spark-agents/&lt;tenant&gt;) · spark-connect ECR image · kubectl + venv</text>
+<rect x="40" y="46" width="600" height="56" rx="8" fill="none" stroke="#7d8a84" stroke-width="1" stroke-dasharray="4 4"/>
+<text x="52" y="64" class="col">PREREQUISITES (ONCE)</text>
+<text x="52" y="82" class="sub">EKS substrate (terraform) · IRSA vending roles · external-id · mTLS certs · connect image</text>
 
-<!-- column headers -->
-<text x="145" y="120" class="lab" text-anchor="middle">WHAT YOU RUN</text>
-<text x="362" y="120" class="lab" text-anchor="middle">LAYER IT STANDS UP</text>
-<text x="557" y="120" class="lab" text-anchor="middle">PROOF IT WRITES</text>
+<text x="145" y="118" class="col" text-anchor="middle">WHAT YOU RUN</text>
+<text x="362" y="118" class="col" text-anchor="middle">LAYER IT STANDS UP</text>
+<text x="557" y="118" class="col" text-anchor="middle">PROOF IT WRITES</text>
 
-<!-- Row 1: spike -> layer 5 -> storage proof -->
-<g class="run"><rect x="40" y="128" width="210" height="48" rx="6"/><text x="145" y="150" class="th" text-anchor="middle">spike/eks</text><text x="145" y="166" class="mono" text-anchor="middle">kubectl apply -k · run_spike.py</text></g>
+<g class="run"><rect x="40" y="126" width="210" height="52" rx="7"/><text x="145" y="149" class="h" text-anchor="middle">spike/eks</text><text x="145" y="167" class="mono" text-anchor="middle">apply -k · run_spike.py</text></g>
+<g class="lay"><rect x="278" y="126" width="168" height="52" rx="7"/><text x="362" y="149" class="h" text-anchor="middle" fill="#083f33">Layer 5</text><text x="362" y="167" class="sub" text-anchor="middle">storage scoping</text></g>
+<g class="prf"><rect x="474" y="126" width="166" height="52" rx="7"/><text x="557" y="149" class="h" text-anchor="middle" fill="#6b4606">storage proof</text><text x="557" y="167" class="mono" text-anchor="middle">13/13 + cloudtrail_vend</text></g>
 <line x1="250" y1="152" x2="278" y2="152" class="arr" marker-end="url(#arrow)"/>
-<g class="lay"><rect x="278" y="128" width="168" height="48" rx="6"/><text x="362" y="150" class="th" text-anchor="middle">Layer 5</text><text x="362" y="166" class="ts" text-anchor="middle">storage scoping</text></g>
 <line x1="446" y1="152" x2="474" y2="152" class="arr" marker-end="url(#arrow)"/>
-<g class="prf"><rect x="474" y="128" width="166" height="48" rx="6"/><text x="557" y="150" class="th" text-anchor="middle">storage proof</text><text x="557" y="166" class="mono" text-anchor="middle">13/13 + cloudtrail_vend</text></g>
 
-<!-- Row 2: authz -> layer 4 -> catalog proof -->
-<g class="run"><rect x="40" y="190" width="210" height="48" rx="6"/><text x="145" y="212" class="th" text-anchor="middle">authz/  (catalog)</text><text x="145" y="228" class="mono" text-anchor="middle">IdP + OpenFGA + migrate + grants</text></g>
-<line x1="250" y1="214" x2="278" y2="214" class="arr" marker-end="url(#arrow)"/>
-<g class="lay"><rect x="278" y="190" width="168" height="48" rx="6"/><text x="362" y="212" class="th" text-anchor="middle">Layer 4</text><text x="362" y="228" class="ts" text-anchor="middle">catalog authorization</text></g>
-<line x1="446" y1="214" x2="474" y2="214" class="arr" marker-end="url(#arrow)"/>
-<g class="prf"><rect x="474" y="190" width="166" height="48" rx="6"/><text x="557" y="212" class="th" text-anchor="middle">catalog proof</text><text x="557" y="228" class="mono" text-anchor="middle">perprincipal_authz.log</text></g>
+<g class="run"><rect x="40" y="186" width="210" height="52" rx="7"/><text x="145" y="209" class="h" text-anchor="middle">authz/ (catalog)</text><text x="145" y="227" class="mono" text-anchor="middle">IdP + OpenFGA + grants</text></g>
+<g class="lay"><rect x="278" y="186" width="168" height="52" rx="7"/><text x="362" y="209" class="h" text-anchor="middle" fill="#083f33">Layer 4</text><text x="362" y="227" class="sub" text-anchor="middle">catalog authorization</text></g>
+<g class="prf"><rect x="474" y="186" width="166" height="52" rx="7"/><text x="557" y="209" class="h" text-anchor="middle" fill="#6b4606">catalog proof</text><text x="557" y="227" class="mono" text-anchor="middle">perprincipal_authz.log</text></g>
+<line x1="250" y1="212" x2="278" y2="212" class="arr" marker-end="url(#arrow)"/>
+<line x1="446" y1="212" x2="474" y2="212" class="arr" marker-end="url(#arrow)"/>
 
-<!-- Row 3: authz multi-server -> layers 2+3 -> custody proof -->
-<g class="run"><rect x="40" y="252" width="210" height="48" rx="6"/><text x="145" y="274" class="th" text-anchor="middle">authz/  (multi-server)</text><text x="145" y="290" class="mono" text-anchor="middle">gen_connect_server.py + test</text></g>
-<line x1="250" y1="276" x2="278" y2="276" class="arr" marker-end="url(#arrow)"/>
-<g class="lay"><rect x="278" y="252" width="168" height="48" rx="6"/><text x="362" y="274" class="th" text-anchor="middle">Layers 2 + 3</text><text x="362" y="290" class="ts" text-anchor="middle">token custody + execution</text></g>
-<line x1="446" y1="276" x2="474" y2="276" class="arr" marker-end="url(#arrow)"/>
-<g class="prf"><rect x="474" y="252" width="166" height="48" rx="6"/><text x="557" y="274" class="th" text-anchor="middle">custody proof</text><text x="557" y="290" class="mono" text-anchor="middle">multiserver.log</text></g>
+<g class="run"><rect x="40" y="246" width="210" height="52" rx="7"/><text x="145" y="269" class="h" text-anchor="middle">authz/ (multi-server)</text><text x="145" y="287" class="mono" text-anchor="middle">gen_connect_server.py</text></g>
+<g class="lay"><rect x="278" y="246" width="168" height="52" rx="7"/><text x="362" y="269" class="h" text-anchor="middle" fill="#083f33">Layers 2 + 3</text><text x="362" y="287" class="sub" text-anchor="middle">custody + execution</text></g>
+<g class="prf"><rect x="474" y="246" width="166" height="52" rx="7"/><text x="557" y="269" class="h" text-anchor="middle" fill="#6b4606">custody proof</text><text x="557" y="287" class="mono" text-anchor="middle">multiserver.log</text></g>
+<line x1="250" y1="272" x2="278" y2="272" class="arr" marker-end="url(#arrow)"/>
+<line x1="446" y1="272" x2="474" y2="272" class="arr" marker-end="url(#arrow)"/>
 
-<!-- Row 4: authz gateway -> layer 1 -> ingress proof -->
-<g class="run"><rect x="40" y="314" width="210" height="48" rx="6"/><text x="145" y="336" class="th" text-anchor="middle">authz/  (gateway)</text><text x="145" y="352" class="mono" text-anchor="middle">Envoy: gateway-envoy.yaml</text></g>
-<line x1="250" y1="338" x2="278" y2="338" class="arr" marker-end="url(#arrow)"/>
-<g class="lay"><rect x="278" y="314" width="168" height="48" rx="6"/><text x="362" y="336" class="th" text-anchor="middle">Layer 1</text><text x="362" y="352" class="ts" text-anchor="middle">mTLS ingress routing</text></g>
-<line x1="446" y1="338" x2="474" y2="338" class="arr" marker-end="url(#arrow)"/>
-<g class="prf"><rect x="474" y="314" width="166" height="48" rx="6"/><text x="557" y="336" class="th" text-anchor="middle">ingress proof</text><text x="557" y="352" class="mono" text-anchor="middle">ingress_routing.log</text></g>
+<g class="run"><rect x="40" y="306" width="210" height="52" rx="7"/><text x="145" y="329" class="h" text-anchor="middle">authz/ (gateway)</text><text x="145" y="347" class="mono" text-anchor="middle">Envoy gateway-envoy.yaml</text></g>
+<g class="lay"><rect x="278" y="306" width="168" height="52" rx="7"/><text x="362" y="329" class="h" text-anchor="middle" fill="#083f33">Layer 1</text><text x="362" y="347" class="sub" text-anchor="middle">mTLS ingress routing</text></g>
+<g class="prf"><rect x="474" y="306" width="166" height="52" rx="7"/><text x="557" y="329" class="h" text-anchor="middle" fill="#6b4606">ingress proof</text><text x="557" y="347" class="mono" text-anchor="middle">ingress_routing.log</text></g>
+<line x1="250" y1="332" x2="278" y2="332" class="arr" marker-end="url(#arrow)"/>
+<line x1="446" y1="332" x2="474" y2="332" class="arr" marker-end="url(#arrow)"/>
 
-<!-- footer -->
-<rect x="40" y="374" width="600" height="46" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width=".5"/>
-<text x="52" y="394" class="th" fill="#085041">The five proof logs are the per-layer evidence cited in §3.3.</text>
-<text x="52" y="411" class="ts" fill="#0F6E56">Frontier: one composed request through all five links (cert → gateway → authz-vend → scoped storage → own executors), not yet captured.</text>
+<rect x="40" y="368" width="600" height="44" rx="8" fill="#e3f2ec" stroke="#0f6e56" stroke-width=".6"/>
+<text x="52" y="387" class="h" fill="#083f33">The five proof logs are the per-layer evidence cited in §3.3.</text>
+<text x="52" y="402" class="sub" fill="#0f6e56">Frontier: one composed request through all five links, not yet captured.</text>
 </svg>

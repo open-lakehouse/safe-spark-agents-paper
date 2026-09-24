@@ -1,37 +1,33 @@
-<svg width="100%" viewBox="0 0 680 288" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+<svg width="100%" viewBox="0 0 680 296" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
 <title>§1.4.3 (N2): wasted compute on failed attempts, imperative vs SDP</title>
-<desc>Executor-seconds spent on attempts that ultimately failed, measured as real Spark stage-diff executor-seconds and confirmed on EKS by a 48-cell sweep. Bare imperative wastes 521 executor-seconds ($0.028) because spark-submit executes over the data and only then discovers the fault; SDP wastes about 0.5 ($≈0) because its dry-run rejects a bad pipeline before any executor starts — roughly 1000× on failed attempts. Total compute runs ~34× (A $0.032 vs B $0.0009). At production scale a fleet authoring ~1,000 pipelines a week projects to ~$5,000/month of compute SDP's gate never spends.</desc>
+<desc>Executor-seconds spent on attempts that ultimately failed, measured as real Spark stage-diff executor-seconds and confirmed on EKS by a 48-cell sweep. Bare imperative wastes 521 executor-seconds ($0.028) because spark-submit executes over the data and only then discovers the fault; SDP wastes about 0.5 ($≈0) because its dry-run rejects the pipeline before any executor starts — roughly 1000× on failed attempts. Total compute runs ~34× (A $0.032 vs B $0.0009). At production scale a fleet authoring ~1,000 pipelines a week projects to ~$5,000/month of compute SDP's gate never spends.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .th{font-size:13px;font-weight:500}.ts{font-size:11px;fill:#5c6b66}
-  .lab{font-size:11px;font-weight:600;fill:#5c6b66;letter-spacing:.03em}
-  .big{font-size:26px;font-weight:600;fill:#085041}
-  .amber rect{fill:#FAEEDA;stroke:#BA7517;stroke-width:.75}
-  .teal rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:.75}
+  .kick{font-size:11px;font-weight:700;letter-spacing:.07em;fill:#5d6b66}
+  .lbl{font-size:13px;font-weight:600;fill:#26312e}.sub{font-size:11.5px;fill:#5d6b66}
+  .val{font-size:12.5px;font-weight:700}
+  .am rect{fill:#f7efdd;stroke:#8a5a0b;stroke-width:1}
+  .teal rect{fill:#e3f2ec;stroke:#0f6e56;stroke-width:1}
+  .big{font-size:24px;font-weight:700;fill:#083f33}
 </style>
 
-<text x="40" y="18" class="lab">WASTED COMPUTE ON FAILED ATTEMPTS · MEASURED, 48-CELL SWEEP · CONFIRMED ON EKS</text>
-<text x="40" y="36" class="ts">executor-seconds spent on attempts that ultimately failed</text>
+<text x="20" y="20" class="kick">WASTED COMPUTE ON FAILED ATTEMPTS · MEASURED, 48-CELL SWEEP · CONFIRMED ON EKS</text>
 
-<!-- A bar -->
-<text x="40" y="64" class="th" fill="#633806">Imperative</text>
-<g class="amber"><rect x="130" y="52" width="443" height="24" rx="3"/></g>
-<text x="580" y="69" class="th" fill="#633806">521 exec-s · $0.028</text>
-<text x="130" y="92" class="ts">spark-submit executes over the data, then the fault surfaces, so the compute is already spent</text>
+<text x="20" y="62" class="lbl" fill="#6b4606">Imperative</text>
+<g class="am"><rect x="150" y="50" width="470" height="22" rx="4"/></g>
+<text x="640" y="44" class="val" fill="#6b4606" text-anchor="end">521 exec-s · $0.028</text>
+<text x="150" y="86" class="sub" fill="#8a5a0b">spark-submit runs over the data; the fault surfaces only after compute is spent</text>
 
-<!-- B bar -->
-<text x="40" y="124" class="th" fill="#085041">SDP</text>
-<g class="teal"><rect x="130" y="112" width="4" height="24" rx="2"/></g>
-<text x="142" y="129" class="th" fill="#085041">0.5 exec-s · ≈$0</text>
-<text x="130" y="152" class="ts">the dry-run rejects the bad pipeline before any executor starts, so ≈0 is wasted</text>
+<text x="20" y="122" class="lbl" fill="#083f33">SDP</text>
+<g class="teal"><rect x="150" y="110" width="4" height="22" rx="2"/></g>
+<text x="162" y="126" class="val" fill="#083f33">≈0.5 exec-s · ≈$0</text>
+<text x="150" y="146" class="sub" fill="#0f6e56">the dry-run rejects the bad pipeline before any executor starts, so ≈0 is wasted</text>
 
-<!-- headline ratio -->
-<text x="130" y="196" class="big">≈ 1000×</text>
-<text x="250" y="196" class="th" fill="#5c6b66">more wasted compute · finite vs ≈0</text>
-<text x="130" y="214" class="ts">also: ~34× total compute (A $0.032 vs B $0.0009)</text>
+<text x="150" y="188" class="big">≈ 1000×</text>
+<text x="262" y="188" class="lbl">more wasted compute on failures · finite vs ≈0</text>
+<text x="150" y="206" class="sub">also ≈ 34× total compute (A $0.032 vs B $0.0009)</text>
 
-<!-- projection -->
-<rect x="40" y="228" width="600" height="46" rx="6" fill="#F1EFE8" stroke="#8a8a82" stroke-width=".5"/>
-<text x="56" y="248" class="th" fill="#2C2C2A">At production scale (projection from the measured mechanism):</text>
-<text x="56" y="266" class="ts">a fleet authoring ~1,000 pipelines/week wastes ≈ $5,000/month of compute that SDP's gate never spends.</text>
+<rect x="20" y="222" width="640" height="52" rx="8" fill="#eef3f0" stroke="#7d8a84" stroke-width=".6"/>
+<text x="36" y="244" class="lbl">At production scale (projection from the measured mechanism):</text>
+<text x="36" y="262" class="sub">a fleet authoring ~1,000 pipelines/week wastes ≈ $5,000/month of compute that SDP's gate never spends.</text>
 </svg>

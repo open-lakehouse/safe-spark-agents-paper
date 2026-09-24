@@ -1,49 +1,44 @@
-<svg width="100%" viewBox="0 0 680 340" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+<svg width="100%" viewBox="0 0 680 336" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
 <title>Cost of SDP relative to imperative: conciseness and tokens</title>
-<desc>Arm B (SDP) expressed as a percentage of arm A (imperative, = 100%). Mean lines of code: 51% (134 to 68). Mean AST nodes: 56% (1106 to 615). Median tokens: 230% (11.5k to 26.5k). SDP writes about half the code but spends roughly 2.3 times the tokens.</desc>
+<desc>Arm B (SDP) expressed as a percentage of arm A (imperative = 100%). Mean lines of code: 51% (134 to 68). Mean AST nodes: 56% (1106 to 615). Median tokens: 230% (11.5k to 26.5k). SDP writes about half the code but spends roughly 2.3 times the tokens.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .ts{font-size:12px;fill:#5c6b66}
-  .th{font-size:14px;font-weight:500;fill:#16201e}
-  .val{font-size:17px;font-weight:500}
-  .axis{stroke:#c4d1cc;stroke-width:1}
-  .ref{stroke:#5c6b66;stroke-width:1;stroke-dasharray:4 3}
-  .save rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:.75}
-  .cost rect{fill:#FAEEDA;stroke:#BA7517;stroke-width:.75}
+  .kick{font-size:11px;font-weight:700;letter-spacing:.07em;fill:#5d6b66}
+  .tag{font-size:11.5px;font-weight:600;fill:#5d6b66}
+  .tick{font-size:11px;fill:#5d6b66}
+  .met{font-size:13px;font-weight:600;fill:#26312e}
+  .abs{font-size:11.5px;fill:#5d6b66}
+  .val{font-size:14px;font-weight:700}
+  .grid{stroke:#dbe4e0;stroke-width:1}
+  .ref{stroke:#5d6b66;stroke-width:1;stroke-dasharray:4 3}
+  .teal rect{fill:#e3f2ec;stroke:#0f6e56;stroke-width:1}
+  .am rect{fill:#f7efdd;stroke:#8a5a0b;stroke-width:1}
 </style>
 
-<!-- legend -->
-<rect x="64" y="14" width="14" height="10" rx="2" fill="#E1F5EE" stroke="#0F6E56" stroke-width=".75"/>
-<text x="84" y="24" class="ts">SDP writes less than imperative</text>
-<rect x="300" y="14" width="14" height="10" rx="2" fill="#FAEEDA" stroke="#BA7517" stroke-width=".75"/>
-<text x="320" y="24" class="ts">SDP costs more than imperative</text>
+<rect x="30" y="11" width="13" height="11" rx="2" fill="#e3f2ec"/><text x="47" y="20" class="tag">SDP writes less</text>
+<rect x="150" y="11" width="13" height="11" rx="2" fill="#f7efdd"/><text x="167" y="20" class="tag">SDP costs more</text>
 
-<!-- y axis + gridlines (0,100,200 %) -->
-<line x1="64" y1="60" x2="64" y2="280" class="axis"/>
-<text x="56" y="284" class="ts" text-anchor="end">0</text>
-<text x="56" y="196" class="ts" text-anchor="end">100%</text>
-<text x="56" y="108" class="ts" text-anchor="end">200%</text>
+<line x1="150" y1="40" x2="150" y2="276" class="grid"/>
+<text x="140" y="44" class="tick" text-anchor="end">250%</text>
+<line x1="150" y1="87" x2="640" y2="87" class="grid"/>
+<text x="140" y="91" class="tick" text-anchor="end">200%</text>
+<line x1="150" y1="182" x2="640" y2="182" class="ref"/>
+<text x="140" y="186" class="tick" text-anchor="end">100%</text>
+<text x="640" y="176" class="tag" text-anchor="end" fill="#5d6b66">imperative (A) = 100%</text>
+<line x1="150" y1="276" x2="640" y2="276" class="grid"/>
+<text x="140" y="280" class="tick" text-anchor="end">0</text>
 
-<!-- A = 100% reference line -->
-<line x1="64" y1="192" x2="640" y2="192" class="ref"/>
-<text x="636" y="186" class="ts" text-anchor="end">imperative (A) = 100%</text>
+<g class="teal"><rect x="160" y="228" width="100" height="48" rx="4"/></g>
+<text x="210" y="220" class="val" fill="#083f33" text-anchor="middle">51%</text>
+<g class="teal"><rect x="350" y="223" width="100" height="53" rx="4"/></g>
+<text x="400" y="215" class="val" fill="#083f33" text-anchor="middle">56%</text>
+<g class="am"><rect x="520" y="59" width="100" height="217" rx="4"/></g>
+<text x="570" y="52" class="val" fill="#6b4606" text-anchor="middle">230%</text>
 
-<!-- bars: B as % of A -->
-<g class="save"><rect x="128" y="235" width="84" height="45" rx="3"/></g>
-<text x="170" y="226" class="val" fill="#085041" text-anchor="middle">51%</text>
-<g class="save"><rect x="318" y="231" width="84" height="49" rx="3"/></g>
-<text x="360" y="222" class="val" fill="#085041" text-anchor="middle">56%</text>
-<g class="cost"><rect x="508" y="78" width="84" height="202" rx="3"/></g>
-<text x="550" y="70" class="val" fill="#633806" text-anchor="middle">230%</text>
-
-<!-- baseline -->
-<line x1="64" y1="280" x2="640" y2="280" class="axis"/>
-
-<!-- metric labels + absolute A->B -->
-<text x="170" y="300" class="th" text-anchor="middle">Lines of code</text>
-<text x="170" y="316" class="ts" text-anchor="middle">134 → 68</text>
-<text x="360" y="300" class="th" text-anchor="middle">AST nodes</text>
-<text x="360" y="316" class="ts" text-anchor="middle">1106 → 615</text>
-<text x="550" y="300" class="th" text-anchor="middle">Tokens</text>
-<text x="550" y="316" class="ts" text-anchor="middle">11.5k → 26.5k</text>
+<text x="210" y="296" class="met" text-anchor="middle">Lines of code</text>
+<text x="210" y="313" class="abs" text-anchor="middle">134 → 68</text>
+<text x="400" y="296" class="met" text-anchor="middle">AST nodes</text>
+<text x="400" y="313" class="abs" text-anchor="middle">1106 → 615</text>
+<text x="570" y="296" class="met" text-anchor="middle">Tokens</text>
+<text x="570" y="313" class="abs" text-anchor="middle">11.5k → 26.5k</text>
 </svg>

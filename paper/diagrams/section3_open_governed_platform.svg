@@ -1,62 +1,52 @@
-<svg width="100%" viewBox="0 0 680 512" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+<svg width="100%" viewBox="0 0 680 500" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
 <title>Section 3: the open governed reference architecture</title>
-<desc>Three trust zones: untrusted agent authoring (Zone U), governed control plane (Zone C), and the EKS data plane (Zone D), connected by a GitOps loop. The Spark Connect ingress is the single identity-pinned door; executor elasticity is configured but unrun; per-tenant governance is the named frontier.</desc>
+<desc>Three trust zones: untrusted agent authoring (Zone U), governed control plane (Zone C), and the EKS data plane (Zone D), connected by a GitOps loop. Spark Connect is the single identity-pinned door; executor elasticity is configured but unrun; per-tenant governance is demonstrated on live EKS with multi-tenant scale the remaining frontier.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .t{font-size:14px;fill:#16201e}
-  .th{font-size:14px;font-weight:500;fill:#16201e}
-  .ts{font-size:12px;fill:#5c6b66}
-  .arr{stroke:#93a29d;stroke-width:1.5;fill:none}
-  .c-gray rect{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:.75}.c-gray .th{fill:#2C2C2A}.c-gray .ts{fill:#5F5E5A}
-  .c-blue rect{fill:#E6F1FB;stroke:#185FA5;stroke-width:.75}.c-blue .th{fill:#0C447C}.c-blue .ts{fill:#185FA5}
-  .c-teal rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:.75}.c-teal .th{fill:#085041}.c-teal .ts{fill:#0F6E56}
-  .c-purple rect{fill:#EEEDFE;stroke:#534AB7;stroke-width:.75}.c-purple .th{fill:#3C3489}.c-purple .ts{fill:#534AB7}
+  .kick{font-size:11px;font-weight:700;letter-spacing:.07em;fill:#5d6b66}
+  .lbl{font-size:12.5px;font-weight:600;fill:#26312e}.sub{font-size:11px;fill:#5d6b66}
+  .z{font-size:11px;font-weight:700;letter-spacing:.05em;fill:#5d6b66}
+  .arr{stroke:#8a9690;stroke-width:1.4;fill:none}
+  .gray rect{fill:#eef3f0;stroke:#7d8a84;stroke-width:1}.gray .lbl{fill:#3c4642}
+  .purp rect{fill:#eceafb;stroke:#534ab7;stroke-width:1}.purp .lbl{fill:#3c3489}
+  .teal rect{fill:#e3f2ec;stroke:#0f6e56;stroke-width:1}.teal .lbl{fill:#083f33}
 </style>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
 
-<!-- legend -->
-<line x1="40" y1="20" x2="66" y2="20" class="arr"/>
-<text x="72" y="24" class="ts">Demonstrated</text>
-<line x1="190" y1="20" x2="216" y2="20" class="arr" stroke-dasharray="5 3"/>
-<text x="222" y="24" class="ts">Configured, unrun</text>
-<line x1="360" y1="20" x2="386" y2="20" class="arr" stroke-dasharray="1.5 3"/>
-<text x="392" y="24" class="ts">Frontier / vision</text>
+<text x="20" y="20" class="kick">THE OPEN GOVERNED REFERENCE ARCHITECTURE</text>
+<line x1="330" y1="13" x2="356" y2="13" class="arr"/><text x="360" y="17" class="sub">demonstrated</text>
+<line x1="452" y1="13" x2="478" y2="13" class="arr" stroke-dasharray="5 3"/><text x="482" y="17" class="sub">configured, unrun</text>
+<line x1="574" y1="13" x2="600" y2="13" class="arr" stroke-dasharray="1.5 3"/><text x="604" y="17" class="sub">frontier</text>
 
-<!-- Zone U -->
-<rect x="40" y="45" width="600" height="90" rx="10" fill="none" stroke="#888780" stroke-width="1" stroke-dasharray="4 4" opacity="0.55"/>
-<text x="52" y="62" class="ts">Zone U: untrusted authoring (agent holds no creds)</text>
-<g class="c-gray"><rect x="55" y="75" width="165" height="48" rx="6"/><text x="137" y="97" class="th" text-anchor="middle">AI agent</text><text x="137" y="114" class="ts" text-anchor="middle">authors spec</text></g>
-<g class="c-gray"><rect x="250" y="75" width="170" height="48" rx="6"/><text x="335" y="97" class="th" text-anchor="middle">SDP spec (inert)</text><text x="335" y="114" class="ts" text-anchor="middle">pipeline.yml + code</text></g>
-<g class="c-gray"><rect x="450" y="75" width="175" height="48" rx="6"/><text x="537" y="97" class="th" text-anchor="middle">Pull request</text><text x="537" y="114" class="ts" text-anchor="middle">agent's only output</text></g>
-<line x1="220" y1="99" x2="250" y2="99" class="arr" marker-end="url(#arrow)"/>
-<line x1="420" y1="99" x2="450" y2="99" class="arr" marker-end="url(#arrow)"/>
+<rect x="20" y="30" width="640" height="96" rx="10" fill="none" stroke="#7d8a84" stroke-width="1" stroke-dasharray="4 4"/>
+<text x="34" y="47" class="z">ZONE U · UNTRUSTED AUTHORING (agent holds no creds)</text>
+<g class="gray"><rect x="34" y="58" width="168" height="52" rx="7"/><text x="118" y="81" class="lbl" text-anchor="middle">AI agent</text><text x="118" y="98" class="sub" text-anchor="middle">authors spec</text></g>
+<g class="gray"><rect x="222" y="58" width="176" height="52" rx="7"/><text x="310" y="81" class="lbl" text-anchor="middle">SDP spec (inert)</text><text x="310" y="98" class="sub" text-anchor="middle">pipeline.yml + code</text></g>
+<g class="gray"><rect x="418" y="58" width="226" height="52" rx="7"/><text x="531" y="81" class="lbl" text-anchor="middle">Pull request</text><text x="531" y="98" class="sub" text-anchor="middle">agent's only output</text></g>
+<line x1="202" y1="84" x2="222" y2="84" class="arr" marker-end="url(#arrow)"/>
+<line x1="398" y1="84" x2="418" y2="84" class="arr" marker-end="url(#arrow)"/>
 
-<!-- U -> C -->
-<path d="M537 123 V140 H155 V180" fill="none" class="arr" marker-end="url(#arrow)"/>
+<path d="M531 110 V148 H150 V158" fill="none" class="arr" marker-end="url(#arrow)"/>
 
-<!-- Zone C -->
-<rect x="40" y="150" width="600" height="95" rx="10" fill="none" stroke="#378ADD" stroke-width="1" stroke-dasharray="4 4" opacity="0.6"/>
-<text x="52" y="167" class="ts">Zone C: governed control plane (holds creds)</text>
-<g class="c-blue"><rect x="55" y="180" width="200" height="48" rx="6"/><text x="155" y="202" class="th" text-anchor="middle">CI dry-run gate</text><text x="155" y="219" class="ts" text-anchor="middle">checks vs real catalog</text></g>
-<g class="c-blue"><rect x="300" y="180" width="210" height="48" rx="6"/><text x="405" y="202" class="th" text-anchor="middle">Reconciler</text><text x="405" y="219" class="ts" text-anchor="middle">applies desired-state</text></g>
-<line x1="255" y1="204" x2="300" y2="204" class="arr" marker-end="url(#arrow)"/>
+<rect x="20" y="150" width="640" height="96" rx="10" fill="none" stroke="#534ab7" stroke-width="1" stroke-dasharray="4 4"/>
+<text x="34" y="167" class="z" fill="#3c3489">ZONE C · GOVERNED CONTROL PLANE (holds creds)</text>
+<g class="purp"><rect x="34" y="180" width="240" height="52" rx="7"/><text x="154" y="203" class="lbl" text-anchor="middle">CI dry-run gate</text><text x="154" y="220" class="sub" text-anchor="middle">checks vs the real catalog</text></g>
+<g class="purp"><rect x="314" y="180" width="240" height="52" rx="7"/><text x="434" y="203" class="lbl" text-anchor="middle">Reconciler</text><text x="434" y="220" class="sub" text-anchor="middle">applies desired-state</text></g>
+<line x1="274" y1="206" x2="314" y2="206" class="arr" marker-end="url(#arrow)"/>
 
-<!-- C -> D -->
-<path d="M405 228 V255 H147 V290" fill="none" class="arr" marker-end="url(#arrow)"/>
+<path d="M434 232 V252 H148 V266" fill="none" class="arr" marker-end="url(#arrow)"/>
 
-<!-- Zone D -->
-<rect x="40" y="260" width="600" height="175" rx="10" fill="none" stroke="#1D9E75" stroke-width="1" stroke-dasharray="4 4" opacity="0.6"/>
-<text x="52" y="277" class="ts">Zone D: data plane (EKS · only place data is touched)</text>
-<g class="c-teal"><rect x="55" y="290" width="185" height="48" rx="6"/><text x="147" y="312" class="th" text-anchor="middle">Connect ingress</text><text x="147" y="329" class="ts" text-anchor="middle">mTLS · pins principal</text></g>
-<g class="c-teal"><rect x="270" y="290" width="170" height="48" rx="6"/><text x="355" y="312" class="th" text-anchor="middle">Spark driver</text><text x="355" y="329" class="ts" text-anchor="middle">client-mode pod</text></g>
-<g class="c-teal"><rect x="470" y="290" width="155" height="48" rx="6" stroke-dasharray="5 3"/><text x="547" y="312" class="th" text-anchor="middle">Executor pods</text><text x="547" y="329" class="ts" text-anchor="middle">dynamic 0→10</text></g>
-<line x1="240" y1="314" x2="270" y2="314" class="arr" marker-end="url(#arrow)"/>
-<line x1="440" y1="314" x2="470" y2="314" class="arr" marker-end="url(#arrow)"/>
-<g class="c-teal"><rect x="55" y="355" width="270" height="48" rx="6"/><text x="190" y="377" class="th" text-anchor="middle">Governed catalog (Lakekeeper)</text><text x="190" y="394" class="ts" text-anchor="middle">per-principal authz + scoped vend</text></g>
-<g class="c-teal"><rect x="345" y="355" width="180" height="48" rx="6"/><text x="435" y="377" class="th" text-anchor="middle">S3 warehouse</text><text x="435" y="394" class="ts" text-anchor="middle">Iceberg tables</text></g>
-<path d="M355 338 V347 H190 V355" fill="none" class="arr" marker-end="url(#arrow)"/>
-<path d="M547 338 V347 H435 V355" fill="none" class="arr" marker-end="url(#arrow)"/>
+<rect x="20" y="260" width="640" height="170" rx="10" fill="none" stroke="#0f6e56" stroke-width="1" stroke-dasharray="4 4"/>
+<text x="34" y="277" class="z" fill="#083f33">ZONE D · DATA PLANE (EKS · the only place data is touched)</text>
+<g class="teal"><rect x="34" y="288" width="168" height="50" rx="7"/><text x="118" y="310" class="lbl" text-anchor="middle">Connect ingress</text><text x="118" y="326" class="sub" text-anchor="middle">mTLS · pins principal</text></g>
+<g class="teal"><rect x="220" y="288" width="150" height="50" rx="7"/><text x="295" y="310" class="lbl" text-anchor="middle">Spark driver</text><text x="295" y="326" class="sub" text-anchor="middle">client-mode pod</text></g>
+<g class="teal"><rect x="388" y="288" width="256" height="50" rx="7" stroke-dasharray="5 3"/><text x="516" y="310" class="lbl" text-anchor="middle">Executor pods</text><text x="516" y="326" class="sub" text-anchor="middle">dynamic 0 → 10</text></g>
+<line x1="202" y1="313" x2="220" y2="313" class="arr" marker-end="url(#arrow)"/>
+<line x1="370" y1="313" x2="388" y2="313" class="arr" marker-end="url(#arrow)"/>
+<g class="teal"><rect x="34" y="352" width="300" height="50" rx="7"/><text x="184" y="374" class="lbl" text-anchor="middle">Governed catalog (Lakekeeper)</text><text x="184" y="392" class="sub" text-anchor="middle">per-principal authz + scoped vend</text></g>
+<g class="teal"><rect x="356" y="352" width="288" height="50" rx="7"/><text x="500" y="374" class="lbl" text-anchor="middle">S3 warehouse</text><text x="500" y="392" class="sub" text-anchor="middle">Iceberg tables</text></g>
+<path d="M295 338 V345 H184 V352" fill="none" class="arr" marker-end="url(#arrow)"/>
+<path d="M516 338 V345 H500 V352" fill="none" class="arr" marker-end="url(#arrow)"/>
 
-<!-- Frontier -->
-<g class="c-teal"><rect x="40" y="448" width="600" height="46" rx="8"/><text x="340" y="470" class="th" text-anchor="middle">Tenant governance: per-tenant isolation, five layers</text><text x="340" y="487" class="ts" text-anchor="middle">demonstrated on live EKS (see the isolation-chain figure) · only multi-tenant scale remains frontier</text></g>
+<g class="teal"><rect x="20" y="438" width="640" height="46" rx="8"/><text x="340" y="459" class="lbl" text-anchor="middle" fill="#083f33">Tenant governance · five isolation layers, demonstrated on live EKS</text><text x="340" y="475" class="sub" text-anchor="middle" fill="#0f6e56">only multi-tenant scale remains the frontier (see the isolation-chain figure)</text></g>
 </svg>

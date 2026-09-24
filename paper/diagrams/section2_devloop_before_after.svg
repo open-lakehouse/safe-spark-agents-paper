@@ -1,45 +1,40 @@
-<svg width="100%" viewBox="0 0 680 316" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+<svg width="100%" viewBox="0 0 680 300" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
 <title>The agent-native dev loop vs the traditional developer loop</title>
-<desc>Two loops, contrasted. The traditional loop is built for a trusted developer: work in an IDE or notebook holding a live session and credentials, submit the job to the internal platform with a submission tool (spark-submit, a Jobs or Livy API, or an Airflow DAG), execute over real data, and discover a runtime error or wrong data only then, so every retry happens after data is touched and compute is spent; every step assumes a trusted author holding a session, credentials, an endpoint, and the run lifecycle. The agent-native loop is built for an untrusted agent that holds none of that: it proposes inert desired-state, a structural dry-run gate rejects bad structure before any data, then a controller (never the agent) reconciles and executes; the retry happens at the gate with no data touched and near-zero compute.</desc>
+<desc>Two loops, contrasted. The traditional loop is built for a trusted developer: work in an IDE holding a live session and credentials, submit with a tool (spark-submit, Jobs, Airflow), execute over real data, and hit the error only at runtime, so every retry happens after data is touched. The agent-native loop is built for an untrusted agent that holds none of that: it proposes inert desired-state, a dry-run gate rejects bad structure before data, then a controller (never the agent) reconciles and executes; the retry happens at the gate, with no data touched.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .th{font-size:13px;font-weight:600;fill:#16201e}.ts{font-size:10px;fill:#5c6b66}
-  .lbl{font-size:12px;font-weight:600}.note{font-size:10px}
-  .arr{stroke:#93a29d;stroke-width:1.5;fill:none}
-  .c-amber rect{fill:#FAEEDA;stroke:#BA7517;stroke-width:.75}.c-amber .th{fill:#633806}.c-amber .ts{fill:#854F0B}
-  .c-red rect{fill:#FCEBEB;stroke:#A32D2D;stroke-width:.75}.c-red .th{fill:#791F1F}.c-red .ts{fill:#A32D2D}
-  .c-green rect{fill:#EAF3DE;stroke:#3B6D11;stroke-width:.75}.c-green .th{fill:#27500A}.c-green .ts{fill:#3B6D11}
-  .c-teal rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:.75}.c-teal .th{fill:#085041}.c-teal .ts{fill:#0F6E56}
-  .c-red2 rect{fill:#FDF3F2;stroke:#b9433a;stroke-width:.75}.c-red2 .th{fill:#b9433a}.c-red2 .ts{fill:#a2483f}
-  .c-gray rect{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:.75}.c-gray .th{fill:#2C2C2A}.c-gray .ts{fill:#5F5E5A}
+  .lbl{font-size:12px;font-weight:600;fill:#26312e}
+  .sub{font-size:11px;fill:#5d6b66}
+  .arr{stroke:#8a9690;stroke-width:1.5;fill:none}
+  .am rect{fill:#f7efdd;stroke:#8a5a0b;stroke-width:1}.am .lbl{fill:#6b4606}.am .sub{fill:#8a5a0b}
+  .red rect{fill:#fce9e9;stroke:#b9433a;stroke-width:1}.red .lbl{fill:#8f2f27}.red .sub{fill:#b9433a}
+  .teal rect{fill:#e3f2ec;stroke:#0f6e56;stroke-width:1}.teal .lbl{fill:#083f33}.teal .sub{fill:#0f6e56}
+  .purp rect{fill:#eceafb;stroke:#534ab7;stroke-width:1}.purp .lbl{fill:#3c3489}.purp .sub{fill:#534ab7}
 </style>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
 
-<!-- BEFORE: traditional loop -->
-<text x="36" y="20" class="lbl" fill="#854F0B">TRADITIONAL LOOP · a trusted developer submits and runs; the error surfaces at runtime</text>
-<g class="c-amber"><rect x="36" y="32" width="134" height="52" rx="6"/><text x="103" y="54" class="th" text-anchor="middle">IDE / notebook</text><text x="103" y="71" class="ts" text-anchor="middle">holds live session + creds</text></g>
-<g class="c-amber"><rect x="184" y="32" width="140" height="52" rx="6"/><text x="254" y="54" class="th" text-anchor="middle">Submit to platform</text><text x="254" y="71" class="ts" text-anchor="middle">spark-submit / Jobs / Airflow</text></g>
-<g class="c-amber"><rect x="338" y="32" width="104" height="52" rx="6"/><text x="390" y="54" class="th" text-anchor="middle">Execute</text><text x="390" y="71" class="ts" text-anchor="middle">over real data</text></g>
-<g class="c-red"><rect x="456" y="32" width="150" height="52" rx="6"/><text x="531" y="54" class="th" text-anchor="middle">Runtime error</text><text x="531" y="71" class="ts" text-anchor="middle">or wrong data</text></g>
-<line x1="170" y1="58" x2="184" y2="58" class="arr" marker-end="url(#arrow)"/>
-<line x1="324" y1="58" x2="338" y2="58" class="arr" marker-end="url(#arrow)"/>
-<line x1="442" y1="58" x2="456" y2="58" class="arr" marker-end="url(#arrow)"/>
-<path d="M531 84 V102 H103 V84" fill="none" stroke="#BA7517" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
-<text x="317" y="116" class="note" fill="#854F0B" text-anchor="middle">retry, after the data is touched and compute is spent · every step assumes a trusted author (session · creds · endpoint · lifecycle)</text>
+<text x="20" y="22" class="lbl" fill="#8a5a0b">TRADITIONAL LOOP · a trusted developer submits and runs; the error surfaces at runtime</text>
+<g class="am"><rect x="20" y="34" width="130" height="52" rx="7"/><text x="85" y="57" class="lbl" text-anchor="middle">IDE / notebook</text><text x="85" y="73" class="sub" text-anchor="middle">live session + creds</text></g>
+<g class="am"><rect x="164" y="34" width="140" height="52" rx="7"/><text x="234" y="57" class="lbl" text-anchor="middle">Submit to platform</text><text x="234" y="73" class="sub" text-anchor="middle">spark-submit / Jobs / Airflow</text></g>
+<g class="am"><rect x="318" y="34" width="112" height="52" rx="7"/><text x="374" y="57" class="lbl" text-anchor="middle">Execute</text><text x="374" y="73" class="sub" text-anchor="middle">over real data</text></g>
+<g class="red"><rect x="444" y="34" width="180" height="52" rx="7"/><text x="534" y="57" class="lbl" text-anchor="middle">Runtime error</text><text x="534" y="73" class="sub" text-anchor="middle">or wrong data</text></g>
+<line x1="150" y1="60" x2="164" y2="60" class="arr" marker-end="url(#arrow)"/>
+<line x1="304" y1="60" x2="318" y2="60" class="arr" marker-end="url(#arrow)"/>
+<line x1="430" y1="60" x2="444" y2="60" class="arr" marker-end="url(#arrow)"/>
+<path d="M534 86 V106 H85 V86" fill="none" stroke="#8a5a0b" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
+<text x="310" y="120" class="sub" fill="#8a5a0b" text-anchor="middle">retry after data is touched and compute is spent · every step assumes a trusted author</text>
 
-<!-- divider -->
-<line x1="36" y1="140" x2="606" y2="140" stroke="#d9d6cf" stroke-width="1"/>
+<line x1="20" y1="140" x2="660" y2="140" stroke="#dbe4e0" stroke-width="1"/>
 
-<!-- AFTER: agent-native loop -->
-<text x="36" y="168" class="lbl" fill="#0F6E56">AGENT-NATIVE LOOP · an untrusted agent proposes; the error is caught at the gate, before data</text>
-<g class="c-red2"><rect x="36" y="182" width="134" height="52" rx="6"/><text x="103" y="204" class="th" text-anchor="middle">Propose (PR)</text><text x="103" y="221" class="ts" text-anchor="middle">inert spec, no session/creds</text></g>
-<g class="c-green"><rect x="184" y="182" width="140" height="52" rx="6"/><text x="254" y="204" class="th" text-anchor="middle">Dry-run gate (CI)</text><text x="254" y="221" class="ts" text-anchor="middle">structural check, before data</text></g>
-<g class="c-teal"><rect x="338" y="182" width="118" height="52" rx="6"/><text x="397" y="204" class="th" text-anchor="middle">Controller</text><text x="397" y="221" class="ts" text-anchor="middle">reconcile &amp; execute</text></g>
-<g class="c-teal"><rect x="470" y="182" width="136" height="52" rx="6"/><text x="538" y="204" class="th" text-anchor="middle">Materialized data</text><text x="538" y="221" class="ts" text-anchor="middle">over Spark Connect</text></g>
-<line x1="170" y1="208" x2="184" y2="208" class="arr" marker-end="url(#arrow)"/>
-<line x1="324" y1="208" x2="338" y2="208" class="arr" marker-end="url(#arrow)"/>
-<line x1="456" y1="208" x2="470" y2="208" class="arr" marker-end="url(#arrow)"/>
-<path d="M254 234 V252 H103 V234" fill="none" stroke="#3B6D11" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
-<text x="321" y="266" class="note" fill="#0F6E56" text-anchor="middle">retry at the gate, no data touched, ≈0 compute · the agent holds none of the runtime keys, only the inert spec</text>
-<text x="36" y="300" class="ts" fill="#5c6b66">Same shape, reimagined for a fallible author: the submission tool becomes a reviewed PR, and the platform's controller (not the author) runs it.</text>
+<text x="20" y="166" class="lbl" fill="#0f6e56">AGENT-NATIVE LOOP · an untrusted agent proposes; the error is caught at the gate, before data</text>
+<g class="red"><rect x="20" y="178" width="130" height="52" rx="7"/><text x="85" y="201" class="lbl" text-anchor="middle">Propose (PR)</text><text x="85" y="217" class="sub" text-anchor="middle">inert spec, no session</text></g>
+<g class="teal"><rect x="164" y="178" width="140" height="52" rx="7"/><text x="234" y="201" class="lbl" text-anchor="middle">Dry-run gate (CI)</text><text x="234" y="217" class="sub" text-anchor="middle">structural check, before data</text></g>
+<g class="purp"><rect x="318" y="178" width="118" height="52" rx="7"/><text x="377" y="201" class="lbl" text-anchor="middle">Controller</text><text x="377" y="217" class="sub" text-anchor="middle">reconcile &amp; execute</text></g>
+<g class="teal"><rect x="450" y="178" width="174" height="52" rx="7"/><text x="537" y="201" class="lbl" text-anchor="middle">Materialized data</text><text x="537" y="217" class="sub" text-anchor="middle">over Spark Connect</text></g>
+<line x1="150" y1="204" x2="164" y2="204" class="arr" marker-end="url(#arrow)"/>
+<line x1="304" y1="204" x2="318" y2="204" class="arr" marker-end="url(#arrow)"/>
+<line x1="436" y1="204" x2="450" y2="204" class="arr" marker-end="url(#arrow)"/>
+<path d="M234 230 V250 H85 V230" fill="none" stroke="#0f6e56" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
+<text x="310" y="264" class="sub" fill="#0f6e56" text-anchor="middle">retry at the gate, no data touched, ≈0 compute · the agent holds only the inert spec</text>
+<text x="20" y="288" class="sub">Same shape, reimagined: the submission tool becomes a reviewed PR, and the controller runs it.</text>
 </svg>

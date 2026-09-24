@@ -1,91 +1,54 @@
-<svg width="100%" viewBox="0 0 720 448" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+<svg width="100%" viewBox="0 0 720 440" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
 <title>Section 4: Omnigent contained as pods in the client's EKS, over the Section 3 platform</title>
 <desc>A fully containerized Omnigent delivery layer runs as pods in the client's EKS cluster: an Omnigent server (control plane), a credential-free agent fleet (claude_code, codex, pi), and a custodian that holds the Connect PSK and per-tenant catalog tokens. The custodian is the fleet's only path to a catalog; it submits into the Section 3 governed platform (ingress gateway, per-tenant Connect servers, Lakekeeper authz and vend, S3). One IdP over OIDC governs both planes.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .th{font-size:12px;font-weight:500}.ts{font-size:9.5px}.tn{font-size:9px}
-  .lab{font-size:10px;font-weight:600;letter-spacing:.03em}
+  .kick{font-size:11px;font-weight:700;letter-spacing:.07em;fill:#5d6b66}
+  .h{font-size:12.5px;font-weight:600;fill:#26312e}.sub{font-size:11px;fill:#5d6b66}
+  .arr{stroke:#8a9690;stroke-width:1.3;fill:none}
+  .purp rect{fill:#eceafb;stroke:#534ab7;stroke-width:1}
+  .purpbox rect{fill:#ffffff;stroke:#534ab7;stroke-width:.7}
+  .red rect{fill:#fce9e9;stroke:#b9433a;stroke-width:1}
+  .teal rect{fill:#e3f2ec;stroke:#0f6e56;stroke-width:1}
+  .tealbox rect{fill:#ffffff;stroke:#0f6e56;stroke-width:.7}
+  .gray rect{fill:#eef3f0;stroke:#7d8a84;stroke-width:.7}
+  .am rect{fill:#f7efdd;stroke:#8a5a0b;stroke-width:.8}
 </style>
-<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
 
-<text x="18" y="16" class="lab" fill="#5F5E5A">SECTION 4 · OMNIGENT CONTAINED · the governed delivery layer as pods in the client's EKS, over §3</text>
+<text x="18" y="16" class="kick">OMNIGENT CONTAINED · THE DELIVERY LAYER AS PODS IN THE CLIENT'S EKS, OVER §3</text>
 
-<!-- Client IdP -->
-<rect x="300" y="28" width="150" height="28" rx="5" fill="#F7EFDD" stroke="#8a5a0b" stroke-width=".8"/>
-<text x="375" y="46" class="ts" text-anchor="middle" fill="#8a5a0b">Client IdP (OIDC)</text>
-<line x1="360" y1="56" x2="120" y2="118" stroke="#8a5a0b" stroke-width=".8" stroke-dasharray="4 3"/>
-<text x="196" y="92" class="tn" fill="#8a5a0b">OIDC authn</text>
+<g class="am"><rect x="300" y="24" width="150" height="28" rx="6"/><text x="375" y="42" class="sub" text-anchor="middle" fill="#6b4606">Client IdP (OIDC)</text></g>
+<line x1="360" y1="52" x2="120" y2="110" stroke="#8a5a0b" stroke-width=".8" stroke-dasharray="4 3"/>
+<text x="196" y="86" class="sub" fill="#8a5a0b">OIDC authn</text>
 
-<!-- Cluster boundary -->
-<text x="18" y="70" class="lab" fill="#5F5E5A">CLIENT EKS CLUSTER · all containerized</text>
-<rect x="10" y="74" width="700" height="292" rx="9" fill="none" stroke="#9aa3a0" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="18" y="68" class="kick" fill="#3c4642">CLIENT EKS CLUSTER · ALL CONTAINERIZED</text>
+<rect x="10" y="74" width="700" height="290" rx="9" fill="none" stroke="#7d8a84" stroke-width="1" stroke-dasharray="6 4"/>
 
-<!-- Omnigent plane -->
-<rect x="22" y="90" width="676" height="120" rx="6" fill="#F7F6FD" stroke="#534AB7" stroke-width="1"/>
-<text x="34" y="107" class="lab" fill="#3C3489">§4  OMNIGENT DELIVERY  ·  ns: omnigent</text>
+<g class="purp"><rect x="22" y="88" width="676" height="116" rx="7"/><text x="34" y="104" class="kick" fill="#3c3489">§4  OMNIGENT DELIVERY · ns: omnigent</text>
+<g class="purpbox"><rect x="36" y="114" width="150" height="62" rx="6"/><text x="111" y="136" class="h" text-anchor="middle" fill="#3c3489">Omnigent server</text><text x="111" y="152" class="sub" text-anchor="middle" fill="#534ab7">control plane</text><text x="111" y="166" class="sub" text-anchor="middle" fill="#534ab7">hosts/sandbox runners</text></g>
+<g class="purpbox"><rect x="224" y="116" width="218" height="58" rx="6" fill="#f4f3fc"/><text x="333" y="112" class="sub" text-anchor="middle" fill="#3c3489">credential-free fleet</text><rect x="230" y="120" width="62" height="46" rx="4" fill="#ffffff" stroke="#534ab7" stroke-width=".5"/><text x="261" y="140" class="sub" text-anchor="middle" fill="#3c3489">claude_code</text><text x="261" y="154" class="sub" text-anchor="middle" fill="#5d6b66">Anthropic</text><rect x="300" y="120" width="62" height="46" rx="4" fill="#ffffff" stroke="#534ab7" stroke-width=".5"/><text x="331" y="140" class="sub" text-anchor="middle" fill="#3c3489">codex</text><text x="331" y="154" class="sub" text-anchor="middle" fill="#5d6b66">OpenAI</text><rect x="370" y="120" width="62" height="46" rx="4" fill="#ffffff" stroke="#534ab7" stroke-width=".5"/><text x="401" y="140" class="sub" text-anchor="middle" fill="#3c3489">pi</text><text x="401" y="154" class="sub" text-anchor="middle" fill="#5d6b66">gateway</text></g>
+<g class="red"><rect x="566" y="112" width="126" height="64" rx="6"/><text x="629" y="132" class="h" text-anchor="middle" fill="#8f2f27">CUSTODIAN</text><text x="629" y="148" class="sub" text-anchor="middle" fill="#8f2f27">holds PSK + tokens</text><text x="629" y="162" class="sub" text-anchor="middle" fill="#8f2f27">only path to catalog</text></g>
+<line x1="186" y1="145" x2="222" y2="145" class="arr" marker-end="url(#arrow)"/>
+<line x1="444" y1="145" x2="564" y2="145" class="arr" marker-end="url(#arrow)"/>
+<text x="502" y="140" class="sub" text-anchor="middle">submit(customer, code)</text>
+</g>
 
-<rect x="36" y="120" width="150" height="62" rx="5" fill="#fff" stroke="#534AB7" stroke-width=".8"/>
-<text x="111" y="142" class="th" text-anchor="middle" fill="#3C3489">Omnigent server</text>
-<text x="111" y="158" class="tn" text-anchor="middle" fill="#5c6b66">control plane (container)</text>
-<text x="111" y="172" class="tn" text-anchor="middle" fill="#5c6b66">hosts / sandbox runners</text>
+<line x1="629" y1="176" x2="629" y2="238" stroke="#b9433a" stroke-width="1.1" marker-end="url(#arrow)"/>
+<text x="620" y="212" class="sub" fill="#b9433a" text-anchor="end">only ingress into §3</text>
 
-<rect x="216" y="122" width="234" height="58" rx="5" fill="#F0EEFB" stroke="#534AB7" stroke-width=".4" stroke-dasharray="3 2"/>
-<text x="333" y="118" class="tn" text-anchor="middle" fill="#3C3489">credential-free agent fleet</text>
-<rect x="224" y="126" width="66" height="50" rx="4" fill="#fff" stroke="#534AB7" stroke-width=".6"/>
-<text x="257" y="147" class="ts" text-anchor="middle" fill="#3C3489">claude_code</text>
-<text x="257" y="161" class="tn" text-anchor="middle" fill="#5c6b66">Anthropic</text>
-<rect x="300" y="126" width="66" height="50" rx="4" fill="#fff" stroke="#534AB7" stroke-width=".6"/>
-<text x="333" y="147" class="ts" text-anchor="middle" fill="#3C3489">codex</text>
-<text x="333" y="161" class="tn" text-anchor="middle" fill="#5c6b66">OpenAI</text>
-<rect x="376" y="126" width="66" height="50" rx="4" fill="#fff" stroke="#534AB7" stroke-width=".6"/>
-<text x="409" y="147" class="ts" text-anchor="middle" fill="#3C3489">pi</text>
-<text x="409" y="161" class="tn" text-anchor="middle" fill="#5c6b66">gateway</text>
+<g class="teal"><rect x="22" y="240" width="676" height="112" rx="7"/><text x="34" y="256" class="kick" fill="#083f33">§3  GOVERNED PLATFORM · ns: spark · per-tenant isolation</text>
+<g class="tealbox"><rect x="566" y="266" width="126" height="62" rx="6"/><text x="629" y="287" class="h" text-anchor="middle" fill="#083f33">Ingress gateway</text><text x="629" y="302" class="sub" text-anchor="middle" fill="#0f6e56">Envoy mTLS</text><text x="629" y="316" class="sub" text-anchor="middle" fill="#0f6e56">routes by principal</text></g>
+<g class="tealbox"><rect x="350" y="266" width="200" height="62" rx="6"/><text x="450" y="287" class="h" text-anchor="middle" fill="#083f33">Per-tenant Connect servers</text><text x="450" y="302" class="sub" text-anchor="middle" fill="#0f6e56">tenant-a / -b / -c · token-injected</text><text x="450" y="316" class="sub" text-anchor="middle" fill="#0f6e56">disjoint executor pods</text></g>
+<g class="tealbox"><rect x="196" y="266" width="138" height="62" rx="6"/><text x="265" y="287" class="h" text-anchor="middle" fill="#083f33">Lakekeeper</text><text x="265" y="302" class="sub" text-anchor="middle" fill="#0f6e56">OpenFGA authz</text><text x="265" y="316" class="sub" text-anchor="middle" fill="#0f6e56">prefix-scoped vend</text></g>
+<g class="gray"><rect x="36" y="266" width="144" height="62" rx="6"/><text x="108" y="287" class="h" text-anchor="middle" fill="#3c4642">S3 warehouse</text><text x="108" y="302" class="sub" text-anchor="middle" fill="#6b7a75">Iceberg tables</text><text x="108" y="316" class="sub" text-anchor="middle" fill="#6b7a75">per-tenant prefixes</text></g>
+<line x1="566" y1="297" x2="552" y2="297" class="arr" marker-end="url(#arrow)"/>
+<line x1="350" y1="297" x2="336" y2="297" class="arr" marker-end="url(#arrow)"/>
+<line x1="196" y1="297" x2="182" y2="297" class="arr" marker-end="url(#arrow)"/>
+<text x="265" y="342" class="sub" fill="#8a5a0b" text-anchor="middle">OIDC: the same issuer authorizes here (§3)</text>
+</g>
 
-<rect x="566" y="120" width="126" height="62" rx="5" fill="#FDF3F2" stroke="#b9433a" stroke-width="1"/>
-<text x="629" y="140" class="th" text-anchor="middle" fill="#b9433a">CUSTODIAN</text>
-<text x="629" y="155" class="tn" text-anchor="middle" fill="#a2483f">holds PSK + tenant tokens</text>
-<text x="629" y="169" class="tn" text-anchor="middle" fill="#a2483f">only path to a catalog</text>
-
-<line x1="187" y1="151" x2="222" y2="151" stroke="#8a8f8c" stroke-width="1" marker-end="url(#arrow)"/>
-<line x1="450" y1="151" x2="564" y2="151" stroke="#8a8f8c" stroke-width="1" marker-end="url(#arrow)"/>
-<text x="507" y="145" class="tn" text-anchor="middle" fill="#5c6b66">submit(customer, code)</text>
-
-<!-- cross-plane: custodian into §3 -->
-<line x1="629" y1="182" x2="629" y2="264" stroke="#b9433a" stroke-width="1.1" marker-end="url(#arrow)"/>
-<text x="636" y="226" class="tn" fill="#b9433a">the only ingress into §3</text>
-
-<!-- §3 plane -->
-<rect x="22" y="236" width="676" height="120" rx="6" fill="#ECF5F1" stroke="#0b7a63" stroke-width="1"/>
-<text x="34" y="253" class="lab" fill="#085041">§3  GOVERNED PLATFORM  ·  ns: spark  ·  per-tenant isolation</text>
-
-<rect x="566" y="266" width="126" height="62" rx="5" fill="#fff" stroke="#0b7a63" stroke-width=".8"/>
-<text x="629" y="287" class="th" text-anchor="middle" fill="#085041">Ingress gateway</text>
-<text x="629" y="302" class="tn" text-anchor="middle" fill="#5c6b66">Envoy mTLS</text>
-<text x="629" y="316" class="tn" text-anchor="middle" fill="#5c6b66">routes by principal</text>
-
-<rect x="350" y="266" width="200" height="62" rx="5" fill="#fff" stroke="#0b7a63" stroke-width=".8"/>
-<text x="450" y="287" class="ts" text-anchor="middle" fill="#085041">Per-tenant Connect servers</text>
-<text x="450" y="302" class="tn" text-anchor="middle" fill="#5c6b66">tenant-a / -b / -c · token-injected</text>
-<text x="450" y="316" class="tn" text-anchor="middle" fill="#5c6b66">disjoint executor pods</text>
-
-<rect x="196" y="266" width="138" height="62" rx="5" fill="#fff" stroke="#0b7a63" stroke-width=".8"/>
-<text x="265" y="287" class="th" text-anchor="middle" fill="#085041">Lakekeeper</text>
-<text x="265" y="302" class="tn" text-anchor="middle" fill="#5c6b66">OpenFGA authz +</text>
-<text x="265" y="316" class="tn" text-anchor="middle" fill="#5c6b66">prefix-scoped vend</text>
-
-<rect x="36" y="266" width="144" height="62" rx="5" fill="#f0efec" stroke="#9aa3a0" stroke-width=".8"/>
-<text x="108" y="287" class="th" text-anchor="middle" fill="#5F5E5A">S3 warehouse</text>
-<text x="108" y="302" class="tn" text-anchor="middle" fill="#5c6b66">Iceberg tables</text>
-<text x="108" y="316" class="tn" text-anchor="middle" fill="#5c6b66">per-tenant prefixes</text>
-
-<line x1="566" y1="297" x2="552" y2="297" stroke="#8a8f8c" stroke-width="1" marker-end="url(#arrow)"/>
-<line x1="350" y1="297" x2="336" y2="297" stroke="#8a8f8c" stroke-width="1" marker-end="url(#arrow)"/>
-<line x1="196" y1="297" x2="182" y2="297" stroke="#8a8f8c" stroke-width="1" marker-end="url(#arrow)"/>
-<text x="265" y="344" class="tn" text-anchor="middle" fill="#8a5a0b">OIDC: same issuer authorizes here (§3)</text>
-
-<!-- captions -->
-<text x="18" y="388" class="th" fill="#3C3489">Contained: server + custodian + the credential-free fleet all run as pods in the client's EKS. No laptop, no port-forward shim.</text>
-<text x="18" y="404" class="ts" fill="#5c6b66">The custodian alone holds the Connect PSK and every per-tenant token; the claude_code / codex / pi agents hold zero credentials.</text>
-<text x="18" y="418" class="ts" fill="#5c6b66">One IdP (OIDC) governs both planes: the same issuer authenticates Omnigent and authorizes Lakekeeper per-principal. §2 dev loop + §3 isolation unchanged underneath.</text>
-<text x="18" y="434" class="tn" fill="#8a5a0b">Deploy: kubectl kustomize deploy/kubernetes/base | kubectl apply -f -  (server)  +  overlays/sandbox-runners (agents)  +  the §3 stack (S0-S7).</text>
+<text x="18" y="386" class="h" fill="#3c3489">Contained: server + custodian + credential-free fleet as pods in the client's EKS. No laptop, no shim.</text>
+<text x="18" y="404" class="sub">The custodian alone holds the PSK and tokens; claude_code / codex / pi hold zero credentials.</text>
+<text x="18" y="420" class="sub">One IdP (OIDC) governs both planes; §2 + §3 unchanged. Deploy: kustomize + overlays.</text>
 </svg>

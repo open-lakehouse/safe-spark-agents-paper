@@ -1,75 +1,49 @@
-<svg width="100%" viewBox="0 0 720 470" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+<svg width="100%" viewBox="0 0 720 464" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
 <title>The agent-native dev loop: author, open a PR, gate on CI, reconcile over Connect</title>
-<desc>An untrusted agent authors an inert SDP spec (no session, credentials, or config) and its only action is to open a pull request. On CI the pull request is gated by spark-pipelines dry-run, which validates the dataflow graph without touching data: a valid spec reports Run is COMPLETED, a broken one fails with TABLE_OR_VIEW_NOT_FOUND and feeds back to the agent. Only on merge does a controller, never the agent, run spark-pipelines run over Spark Connect, which ships plans over mTLS to a cluster of driver and executor pods that materialize tables to the governed catalog and S3 using the controller's credential. The same loop runs against a local Connect server for development or the remote cluster for production by changing SPARK_REMOTE.</desc>
+<desc>An untrusted agent authors an inert SDP spec (no session, credentials, or config) and its only action is to open a pull request. CI gates the PR with a spark-pipelines dry-run that validates the dataflow graph without touching data: valid reports Run is COMPLETED, broken fails with TABLE_OR_VIEW_NOT_FOUND and feeds back to the agent. Only on merge does a controller, never the agent, run spark-pipelines run over Spark Connect, shipping plans over mTLS to driver and executor pods that materialize tables to the governed catalog and S3 with the controller's credential. The same loop targets a local Connect server in dev or the cluster in prod by changing SPARK_REMOTE.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .th{font-size:12px;font-weight:600}.ts{font-size:10px}.tn{font-size:9px}
-  .lab{font-size:10px;font-weight:600;letter-spacing:.04em}
-  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:8.5px}
+  .kick{font-size:11px;font-weight:700;letter-spacing:.07em;fill:#5d6b66}
+  .h{font-size:13px;font-weight:600;fill:#26312e}
+  .sub{font-size:11px;fill:#5d6b66}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10.5px}
+  .arr{stroke:#8a9690;stroke-width:1.4;fill:none}
+  .red rect{fill:#fce9e9;stroke:#b9433a;stroke-width:1}.red .h{fill:#8f2f27}
+  .teal rect{fill:#e3f2ec;stroke:#0f6e56;stroke-width:1}.teal .h{fill:#083f33}
+  .purp rect{fill:#eceafb;stroke:#534ab7;stroke-width:1}.purp .h{fill:#3c3489}
 </style>
-<defs>
-<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
-</defs>
+<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
 
-<text x="16" y="16" class="lab" fill="#5F5E5A">THE AGENT-NATIVE DEV LOOP: author, open a PR, structural gate on CI, reconcile over Connect</text>
+<text x="16" y="16" class="kick">THE AGENT-NATIVE DEV LOOP · AUTHOR → PR → GATE → RECONCILE OVER CONNECT</text>
 
-<!-- Untrusted author zone -->
-<text x="16" y="42" class="lab" fill="#b9433a">UNTRUSTED AUTHOR</text>
-<rect x="16" y="50" width="176" height="50" rx="6" fill="#FDF3F2" stroke="#b9433a" stroke-width="1"/>
-<text x="104" y="71" class="th" text-anchor="middle" fill="#b9433a">Agent</text>
-<text x="104" y="88" class="tn" text-anchor="middle" fill="#a2483f">no session, no creds, no config</text>
-<line x1="104" y1="100" x2="104" y2="122" stroke="#b9433a" stroke-width="1.2" marker-end="url(#ar)"/>
-<text x="110" y="115" class="tn" fill="#a2483f">writes</text>
-<rect x="16" y="124" width="176" height="50" rx="6" fill="#FDF3F2" stroke="#b9433a" stroke-width="1"/>
-<text x="104" y="145" class="th" text-anchor="middle" fill="#b9433a">SDP spec</text>
-<text x="104" y="162" class="tn" text-anchor="middle" fill="#a2483f">inert @dp transforms (pipeline.py)</text>
-<line x1="104" y1="174" x2="104" y2="196" stroke="#b9433a" stroke-width="1.2" marker-end="url(#ar)"/>
-<text x="110" y="189" class="tn" fill="#a2483f">opens</text>
-<rect x="16" y="198" width="176" height="50" rx="6" fill="#FDF3F2" stroke="#b9433a" stroke-width="1"/>
-<text x="104" y="219" class="th" text-anchor="middle" fill="#b9433a">Pull request</text>
-<text x="104" y="236" class="tn" text-anchor="middle" fill="#a2483f">the only interface in</text>
+<text x="16" y="42" class="sub" fill="#8f2f27">UNTRUSTED AUTHOR</text>
+<g class="red"><rect x="16" y="50" width="180" height="48" rx="7"/><text x="106" y="70" class="h" text-anchor="middle" fill="#8f2f27">Agent</text><text x="106" y="87" class="sub" text-anchor="middle" fill="#8f2f27">no session, no creds, no config</text></g>
+<g class="red"><rect x="16" y="112" width="180" height="48" rx="7"/><text x="106" y="132" class="h" text-anchor="middle" fill="#8f2f27">SDP spec</text><text x="106" y="149" class="sub" text-anchor="middle" fill="#8f2f27">inert @dp transforms</text></g>
+<g class="red"><rect x="16" y="174" width="180" height="48" rx="7"/><text x="106" y="194" class="h" text-anchor="middle" fill="#8f2f27">Pull request</text><text x="106" y="211" class="sub" text-anchor="middle" fill="#8f2f27">the only interface in</text></g>
+<line x1="106" y1="98" x2="106" y2="112" class="arr" marker-end="url(#ar)"/>
+<line x1="106" y1="160" x2="106" y2="174" class="arr" marker-end="url(#ar)"/>
 
-<!-- boundary -->
-<line x1="212" y1="48" x2="212" y2="448" stroke="#b9433a" stroke-width="1.3" stroke-dasharray="6 4"/>
-<text x="206" y="130" class="tn" fill="#b9433a" text-anchor="middle" transform="rotate(-90 206 130)">control boundary</text>
+<line x1="212" y1="44" x2="212" y2="444" stroke="#b9433a" stroke-width="1.3" stroke-dasharray="6 4"/>
+<text x="198" y="128" class="sub" fill="#b9433a" text-anchor="middle" transform="rotate(-90 198 128)">control boundary</text>
 
-<!-- Governed platform zone -->
-<text x="236" y="42" class="lab" fill="#085041">GOVERNED PLATFORM</text>
+<text x="236" y="42" class="sub" fill="#083f33">GOVERNED PLATFORM</text>
 
-<line x1="192" y1="223" x2="248" y2="223" stroke="#8a8f8c" stroke-width="1.2" marker-end="url(#ar)"/>
-<rect x="250" y="182" width="300" height="82" rx="6" fill="#fff" stroke="#0b7a63" stroke-width="1"/>
-<text x="400" y="201" class="th" text-anchor="middle" fill="#085041">CI gate</text>
-<text x="400" y="217" class="mono" text-anchor="middle" fill="#5c6b66">spark-pipelines dry-run --spec orders/spark-pipeline.yml</text>
-<text x="400" y="233" class="tn" text-anchor="middle" fill="#5c6b66">builds + validates the dataflow graph; touches no data</text>
-<text x="400" y="248" class="tn" text-anchor="middle" fill="#0b7a63">valid: Run is COMPLETED</text>
-<text x="400" y="260" class="tn" text-anchor="middle" fill="#b9433a">broken: TABLE_OR_VIEW_NOT_FOUND</text>
+<line x1="196" y1="198" x2="248" y2="198" class="arr" marker-end="url(#ar)"/>
+<g class="teal"><rect x="250" y="158" width="310" height="84" rx="8"/><text x="405" y="176" class="h" text-anchor="middle" fill="#083f33">CI gate</text><text x="405" y="192" class="mono" text-anchor="middle" fill="#5d6b66">spark-pipelines dry-run --spec orders/spark-pipeline.yml</text><text x="405" y="208" class="sub" text-anchor="middle" fill="#5d6b66">builds + validates the graph · touches no data</text><text x="405" y="225" class="sub" text-anchor="middle" fill="#0f6e56">valid: Run is COMPLETED</text><text x="405" y="239" class="sub" text-anchor="middle" fill="#b9433a">broken: TABLE_OR_VIEW_NOT_FOUND</text></g>
+<line x1="248" y1="231" x2="196" y2="231" class="arr" stroke="#b9433a" stroke-dasharray="5 3" marker-end="url(#ar)"/>
+<text x="222" y="252" class="sub" fill="#b9433a" text-anchor="middle">feedback, no data touched</text>
 
-<!-- feedback to agent -->
-<line x1="248" y1="255" x2="196" y2="255" stroke="#b9433a" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#ar)"/>
-<text x="222" y="276" class="tn" fill="#b9433a" text-anchor="middle">feedback, no data touched</text>
+<line x1="405" y1="242" x2="405" y2="284" class="arr" marker-end="url(#ar)"/>
+<text x="413" y="265" class="sub" fill="#5d6b66">on merge (valid only)</text>
 
-<line x1="400" y1="264" x2="400" y2="300" stroke="#8a8f8c" stroke-width="1.2" marker-end="url(#ar)"/>
-<text x="408" y="284" class="tn" fill="#5c6b66">on merge</text>
+<g class="purp"><rect x="250" y="288" width="224" height="62" rx="8"/><text x="362" y="308" class="h" text-anchor="middle" fill="#3c3489">Controller (never the agent)</text><text x="362" y="325" class="mono" text-anchor="middle" fill="#5d6b66">spark-pipelines run --spec</text><text x="362" y="341" class="sub" text-anchor="middle" fill="#534ab7">a Connect client, ships plans not code</text></g>
+<g class="teal"><rect x="494" y="288" width="92" height="62" rx="8"/><text x="540" y="313" class="h" text-anchor="middle" fill="#083f33">Connect</text><text x="540" y="332" class="sub" text-anchor="middle" fill="#0f6e56">plans · mTLS</text></g>
+<g class="teal"><rect x="600" y="288" width="100" height="62" rx="8"/><text x="650" y="313" class="h" text-anchor="middle" fill="#083f33">Cluster</text><text x="650" y="332" class="sub" text-anchor="middle" fill="#0f6e56">driver + exec pods</text></g>
+<line x1="474" y1="319" x2="494" y2="319" class="arr" marker-end="url(#ar)"/>
+<line x1="586" y1="319" x2="600" y2="319" class="arr" marker-end="url(#ar)"/>
 
-<rect x="250" y="302" width="216" height="60" rx="6" fill="#F2F1FB" stroke="#3C3489" stroke-width="1"/>
-<text x="358" y="322" class="th" text-anchor="middle" fill="#3C3489">Controller (never the agent)</text>
-<text x="358" y="338" class="mono" text-anchor="middle" fill="#5c6b66">spark-pipelines run --spec</text>
-<text x="358" y="352" class="tn" text-anchor="middle" fill="#5c6b66">runs it as a Connect client, ships plans not code</text>
+<line x1="650" y1="350" x2="650" y2="382" class="arr" marker-end="url(#ar)"/>
+<g class="teal"><rect x="392" y="386" width="340" height="44" rx="8"/><text x="562" y="405" class="h" text-anchor="middle" fill="#083f33">materialized tables · governed catalog + S3</text><text x="562" y="421" class="sub" text-anchor="middle" fill="#5d6b66">read with the controller's credential, never the agent's</text></g>
 
-<line x1="466" y1="332" x2="490" y2="332" stroke="#8a8f8c" stroke-width="1.2" marker-end="url(#ar)"/>
-<rect x="492" y="304" width="92" height="56" rx="6" fill="#fff" stroke="#0b7a63" stroke-width="1"/>
-<text x="538" y="326" class="th" text-anchor="middle" fill="#085041">Connect</text>
-<text x="538" y="343" class="tn" text-anchor="middle" fill="#5c6b66">plans, mTLS</text>
-
-<line x1="584" y1="332" x2="608" y2="332" stroke="#8a8f8c" stroke-width="1.2" marker-end="url(#ar)"/>
-<rect x="610" y="304" width="96" height="56" rx="6" fill="#fff" stroke="#0b7a63" stroke-width="1"/>
-<text x="658" y="326" class="th" text-anchor="middle" fill="#085041">Cluster</text>
-<text x="658" y="343" class="tn" text-anchor="middle" fill="#5c6b66">driver + exec pods</text>
-
-<line x1="658" y1="360" x2="658" y2="392" stroke="#8a8f8c" stroke-width="1.2" marker-end="url(#ar)"/>
-<rect x="360" y="394" width="346" height="42" rx="6" fill="#ECF5F1" stroke="#0b7a63" stroke-width="1"/>
-<text x="533" y="411" class="ts" text-anchor="middle" fill="#085041">materialized tables: governed catalog + S3</text>
-<text x="533" y="425" class="tn" text-anchor="middle" fill="#5c6b66">read with the controller's credential, never the agent's</text>
-
-<text x="16" y="460" class="tn" fill="#8a5a0b">Same loop, two endpoints: a local Connect server (dev) or the remote cluster (prod), by changing SPARK_REMOTE. No code change.</text>
+<text x="16" y="452" class="sub" fill="#8a5a0b">Same loop, two endpoints: local Connect (dev) or the cluster (prod) — change SPARK_REMOTE only.</text>
 </svg>

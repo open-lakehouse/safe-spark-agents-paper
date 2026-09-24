@@ -1,47 +1,41 @@
-<svg width="100%" viewBox="0 0 680 356" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
+<svg width="100%" viewBox="0 0 680 342" role="img" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif, system-ui, sans-serif">
 <title>Section 3.3: the adversary and the five paths to tenant B</title>
 <desc>A fully-untrusted tenant-A agent could reach tenant B's data along exactly five paths: connect to tenant B's server, be handed tenant B's credential, execute in a shared process, ask the catalog for tenant B, or hit storage with a broad credential. Each path is closed by one of the five isolation layers, so all five must hold.</desc>
 <style>
   text{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .th{font-size:13px;font-weight:500}.ts{font-size:11px}
-  .lab{font-size:11px;font-weight:600;fill:#5c6b66;letter-spacing:.03em}
-  .att rect{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:.75}.att text{fill:#2C2C2A}
-  .lay rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:.75}.lay .th{fill:#085041}.lay .ts{fill:#0F6E56}
-  .xg circle{fill:#F7EFDD;stroke:#8a5a0b;stroke-width:1}.xg path{stroke:#8a5a0b;stroke-width:1.6;stroke-linecap:round}
+  .kick{font-size:11px;font-weight:700;letter-spacing:.07em;fill:#5d6b66}
+  .h{font-size:12.5px;font-weight:600;fill:#26312e}.sub{font-size:11px;fill:#5d6b66}
+  .att rect{fill:#eef3f0;stroke:#7d8a84;stroke-width:1}.att .h{fill:#3c4642}
+  .lay rect{fill:#e3f2ec;stroke:#0f6e56;stroke-width:1}.lay .h{fill:#083f33}
 </style>
-<text x="40" y="19" class="lab">AN UNTRUSTED TENANT-A AGENT COULD REACH TENANT B FIVE WAYS, EACH IS CLOSED BY ONE LAYER</text>
-<text x="44" y="43" class="lab" fill="#8a5a0b">THE PATH IT WOULD TAKE</text>
-<text x="640" y="43" class="lab" fill="#085041" text-anchor="end">THE LAYER THAT CLOSES IT</text>
 
-<g class="att"><rect x="40" y="52" width="300" height="42" rx="6"/><text x="52" y="78" class="th">① connect straight to tenant B's server</text></g>
-<g class="lay"><rect x="388" y="52" width="252" height="42" rx="6"/><text x="400" y="70" class="ts">closed by</text><text x="400" y="86" class="th">1 · mTLS ingress routing</text></g>
+<text x="40" y="22" class="kick">AN UNTRUSTED TENANT-A AGENT COULD REACH TENANT B FIVE WAYS · EACH IS CLOSED BY ONE LAYER</text>
+<text x="44" y="48" class="sub" fill="#3c4642">THE PATH IT WOULD TAKE</text>
+<text x="636" y="48" class="sub" fill="#083f33" text-anchor="end">THE LAYER THAT CLOSES IT</text>
 
-<g class="att"><rect x="40" y="104" width="300" height="42" rx="6"/><text x="52" y="130" class="th">② be handed tenant B's credential</text></g>
-<g class="lay"><rect x="388" y="104" width="252" height="42" rx="6"/><text x="400" y="122" class="ts">closed by</text><text x="400" y="138" class="th">2 · token custody</text></g>
+<g class="att"><rect x="40" y="56" width="304" height="42" rx="7"/><text x="52" y="82" class="h">① connect straight to tenant B's server</text></g>
+<g class="lay"><rect x="392" y="56" width="248" height="42" rx="7"/><text x="404" y="80" class="sub" text-anchor="middle">L1 · mTLS ingress routing</text></g>
+<g class="att"><rect x="40" y="108" width="304" height="42" rx="7"/><text x="52" y="134" class="h">② be handed tenant B's credential</text></g>
+<g class="lay"><rect x="392" y="108" width="248" height="42" rx="7"/><text x="516" y="132" class="sub" text-anchor="middle">L2 · token custody</text></g>
+<g class="att"><rect x="40" y="160" width="304" height="42" rx="7"/><text x="52" y="186" class="h">③ execute in a process shared with B</text></g>
+<g class="lay"><rect x="392" y="160" width="248" height="42" rx="7"/><text x="516" y="184" class="sub" text-anchor="middle">L3 · execution isolation</text></g>
+<g class="att"><rect x="40" y="212" width="304" height="42" rx="7"/><text x="52" y="238" class="h">④ ask the catalog for B's tables</text></g>
+<g class="lay"><rect x="392" y="212" width="248" height="42" rx="7"/><text x="516" y="236" class="sub" text-anchor="middle">L4 · catalog authorization</text></g>
+<g class="att"><rect x="40" y="264" width="304" height="42" rx="7"/><text x="52" y="290" class="h">⑤ reach B's bytes with a broad cred</text></g>
+<g class="lay"><rect x="392" y="264" width="248" height="42" rx="7"/><text x="516" y="288" class="sub" text-anchor="middle">L5 · storage scoping</text></g>
 
-<g class="att"><rect x="40" y="156" width="300" height="42" rx="6"/><text x="52" y="182" class="th">③ execute in a process shared with B</text></g>
-<g class="lay"><rect x="388" y="156" width="252" height="42" rx="6"/><text x="400" y="174" class="ts">closed by</text><text x="400" y="190" class="th">3 · execution isolation</text></g>
-
-<g class="att"><rect x="40" y="208" width="300" height="42" rx="6"/><text x="52" y="234" class="th">④ ask the catalog for tenant B's tables</text></g>
-<g class="lay"><rect x="388" y="208" width="252" height="42" rx="6"/><text x="400" y="226" class="ts">closed by</text><text x="400" y="242" class="th">4 · catalog authorization</text></g>
-
-<g class="att"><rect x="40" y="260" width="300" height="42" rx="6"/><text x="52" y="286" class="th">⑤ reach B's bytes with a broad cred</text></g>
-<g class="lay"><rect x="388" y="260" width="252" height="42" rx="6"/><text x="400" y="278" class="ts">closed by</text><text x="400" y="294" class="th">5 · storage scoping</text></g>
-
-<!-- blocked arrows with an X between each pair -->
-<g>
-  <line x1="340" y1="73"  x2="388" y2="73"  stroke="#c9b48a" stroke-width="1.5"/>
-  <line x1="340" y1="125" x2="388" y2="125" stroke="#c9b48a" stroke-width="1.5"/>
-  <line x1="340" y1="177" x2="388" y2="177" stroke="#c9b48a" stroke-width="1.5"/>
-  <line x1="340" y1="229" x2="388" y2="229" stroke="#c9b48a" stroke-width="1.5"/>
-  <line x1="340" y1="281" x2="388" y2="281" stroke="#c9b48a" stroke-width="1.5"/>
+<g stroke="#b9433a" stroke-width="1.5" fill="none" stroke-linecap="round">
+  <line x1="344" y1="77" x2="392" y2="77"/>
+  <line x1="344" y1="129" x2="392" y2="129"/>
+  <line x1="344" y1="181" x2="392" y2="181"/>
+  <line x1="344" y1="233" x2="392" y2="233"/>
+  <line x1="344" y1="285" x2="392" y2="285"/>
+  <path d="M363 73 L373 83 M373 73 L363 83"/>
+  <path d="M363 125 L373 135 M373 125 L363 135"/>
+  <path d="M363 177 L373 187 M373 177 L363 187"/>
+  <path d="M363 229 L373 239 M373 229 L363 239"/>
+  <path d="M363 281 L373 291 M373 281 L363 291"/>
 </g>
-<g class="xg">
-  <g transform="translate(364,73)"><circle r="9"/><path d="M-4 -4 L4 4 M4 -4 L-4 4" fill="none"/></g>
-  <g transform="translate(364,125)"><circle r="9"/><path d="M-4 -4 L4 4 M4 -4 L-4 4" fill="none"/></g>
-  <g transform="translate(364,177)"><circle r="9"/><path d="M-4 -4 L4 4 M4 -4 L-4 4" fill="none"/></g>
-  <g transform="translate(364,229)"><circle r="9"/><path d="M-4 -4 L4 4 M4 -4 L-4 4" fill="none"/></g>
-  <g transform="translate(364,281)"><circle r="9"/><path d="M-4 -4 L4 4 M4 -4 L-4 4" fill="none"/></g>
-</g>
-<text x="40" y="326" class="ts" fill="#5c6b66">Each layer is independently defeatable, so all five must hold, and none is redundant.</text>
+
+<text x="40" y="328" class="sub">Each layer is independently defeatable, so all five must hold, and none is redundant.</text>
 </svg>
